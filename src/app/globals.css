@@ -435,11 +435,6 @@ h1[data-localization-key='userProfile.navbar.title'] {
   @apply gap-3 px-3 py-4;
 }
 
-.cl-userButtonPopoverCustomItemButton,
-.cl-userButtonPopoverActionButton {
-  @apply !border-0 px-3 py-3 font-normal text-primary transition-colors duration-300;
-}
-
 .cl-userButtonPopoverCustomItemButton:hover,
 .cl-userButtonPopoverActionButton:hover,
 .cl-userButtonPopoverCustomItemButton:active,
@@ -459,8 +454,13 @@ h1[data-localization-key='userProfile.navbar.title'] {
   @apply flex-none;
 }
 
+.cl-userButtonPopoverActions {
+  @apply py-1;
+}
+
+.cl-userButtonPopoverCustomItemButton,
 .cl-userButtonPopoverActionButton {
-  @apply gap-2;
+  @apply mx-1 gap-2 rounded-md !border-0 px-3 py-2.5 font-normal text-primary transition-colors duration-300;
 }
 
 .cl-userPreviewMainIdentifier {
@@ -518,4 +518,16 @@ h1[data-localization-key='userProfile.navbar.title'] {
 .cl-profileSection__profile,
 .cl-profileSection__emailAddresses {
   @apply border-b-0;
+}
+
+.cl-profileSectionPrimaryButton {
+  @apply h-9 border border-input px-4 py-3 dark:text-secondary-foreground;
+}
+
+.cl-profileSectionPrimaryButton__danger {
+  @apply !border-destructive;
+}
+
+.cl-profileSectionPrimaryButton__emailAddresses {
+  @apply border-0;
 }

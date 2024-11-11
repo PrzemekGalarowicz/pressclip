@@ -4,6 +4,8 @@ import { UserButton } from '@clerk/nextjs'
 import { DotIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { ThemeDropdown } from '@/app/_components/theme-dropdown'
+
 // import { getTranslations } from 'next-intl/server'
 
 // export async function generateMetadata() {
@@ -34,6 +36,8 @@ export default function TrendingPage() {
           />
         </UserButton.MenuItems>
       </UserButton>
+
+      <ThemeDropdown side="top" />
 
       <h1>Trending Page</h1>
     </div>
