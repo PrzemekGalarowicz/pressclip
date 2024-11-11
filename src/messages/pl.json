@@ -1,0 +1,204 @@
+{
+  "Global": {
+    "meta": {
+      "title": "Witamy w pressclip-web",
+      "description": "To jest opis",
+      "cookiePolicyTitle": "Polityka plików cookie",
+      "privacyPolicyTitle": "Polityka prywatności",
+      "termsOfServiceTitle": "Warunki użytkowania",
+      "trendingTitle": "Trending",
+      "summariesTitle": "Streszczenia",
+      "notesTitle": "Notatki",
+      "templatesTitle": "Szablony",
+      "pricingTitle": "Cennik",
+      "contactTitle": "Kontakt",
+      "supportTitle": "Pomoc",
+      "notFoundPageTitle": "404 / Strona nie znaleziona"
+    },
+    "loading": "Ładowanie...",
+    "toggleTheme": "Zmień motyw",
+    "light": "Jasny",
+    "dark": "Ciemny",
+    "system": "System",
+    "colorTheme": "Motyw kolorystyczny",
+    "changeColorTheme": "Zmień motyw kolorystyczny",
+    "published": "Opublikowano",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu",
+    "search": "Szukaj",
+    "anytime": "Kiedykolwiek",
+    "today": "Dzisiaj",
+    "yesterday": "Wczoraj",
+    "lastWeek": "Ostatni tydzień",
+    "lastMonth": "Ostatni miesiąc",
+    "last6Months": "Ostatnie 6 miesięcy",
+    "enjoyYourDay": "Miłego dnia!",
+    "todayIsFormattedDay": "{date, date, ::EEEE}",
+    "todayIsFormattedDate": "{date, date, ::dd MMMM, yyyy}",
+    "back": "Powrót",
+    "CtrOrCmd": "Ctr lub Cmd + {keyboardKey}"
+  },
+  "Categories": {
+    "all": "Wszystkie",
+    "general": "Ogólne",
+    "business": "Biznes",
+    "entertainment": "Rozrywka",
+    "health": "Zdrowie",
+    "science": "Nauka",
+    "sports": "Sport",
+    "technology": "Technologia",
+    "bookmarked": "Zakładki"
+  },
+  "OptionsMenu": {
+    "options": "Opcjie",
+    "view": "Podgląd",
+    "edit": "Edytuj",
+    "clip": "Wytnij",
+    "hide": "Ukryj",
+    "clipped": "Wycięty",
+    "publish": "Opublikuj",
+    "published": "Opublikowano",
+    "unpublish": "Odwołaj publikację",
+    "bookmark": "Dodaj do zakładek",
+    "bookmarked": "Dodane do zakładek",
+    "notInterested": "Nie interesuje mnie",
+    "deleteAlertTitle": "Jesteś pewien?",
+    "deleteAlertDescription": "Tej czynności nie można cofnąć. Spowoduje to trwałe usunięcie Twojej prasy.",
+    "delete": "Usuń",
+    "cancel": "Anuluj"
+  },
+  "Chat": {
+    "label": "Zadaj dodatkowe pytanie",
+    "placeholder": "Potrzebujesz więcej szczegółów? Zadaj dodatkowe pytanie...",
+    "send": "Wyślij",
+    "loading": "Czekanie na odpowiedź od chatu... Proszę czekać."
+  },
+  "CookieDialog": {
+    "title": "Ustawienia plików cookie",
+    "description": "Używamy plików cookie, aby poprawić Twoje doświadczenia na naszej stronie. Kontynuując przeglądanie, zgadzasz się na użycie plików cookie.",
+    "accept": "Akceptuj",
+    "reject": "Odrzuć"
+  },
+  "Errors": {
+    "userNotAuthenticated": "Użytkownik niezalogowany.",
+    "errorCreating": "Błąd podczas tworzenia {thing}: "
+  },
+  "ErrorAuth": {
+    "Configuration": "Wystąpił problem z konfiguracją serwera. Skontaktuj się z administratorem.",
+    "AccessDenied": "Dostęp zabroniony.",
+    "Verification": "Token wygasł lub został już użyty.",
+    "Default": "Wystąpił błąd. Spróbuj ponownie później.",
+    "OAuthSignin": "Błąd podczas logowania OAuth.",
+    "OAuthCallback": "Błąd przetwarzania odpowiedzi OAuth.",
+    "OAuthCreateAccount": "Nie udało się utworzyć konta OAuth.",
+    "EmailCreateAccount": "Nie udało się utworzyć konta e-mail.",
+    "Callback": "Wystąpił błąd podczas obsługi OAuth.",
+    "OAuthAccountNotLinked": "Adres e-mail jest już powiązany z innym kontem.",
+    "EmailSignin": "Nie udało się wysłać e-maila z tokenem weryfikacyjnym.",
+    "CredentialsSignin": "Nieprawidłowe dane logowania. Spróbuj ponownie.",
+    "SessionRequired": "Musisz być zalogowany, aby uzyskać dostęp do tej strony."
+  },
+  "ErrorPage": {
+    "title": "Coś poszło nie tak!",
+    "tryAgain": "Spróbuj ponownie"
+  },
+  "NotFoundPage": {
+    "meta": {
+      "title": "404 / Strona nie znaleziona"
+    },
+    "title": "Strona, której szukasz, nie istnieje.",
+    "goHome": "Przejdź na stronę główną"
+  },
+  "AppMenu": {
+    "user": "Użytkownik",
+    "new": "Nowe",
+    "trending": "Popularne",
+    "clipped": "Wycinki",
+    "summaries": "Streszczenia",
+    "notes": "Notatki",
+    "templates": "Szablony",
+    "podcast": "Podcast",
+    "notifications": "Powiadomienia",
+    "support": "Wsparcie",
+    "openAppMenu": "Otwórz menu",
+    "closeAppMenu": "Zamknij menu"
+  },
+  "SearchDialog": {
+    "search": "Szukaj",
+    "searchPlaceholder": "Wpisz frazę i szukaj...",
+    "result": "WYNIKI",
+    "lastSearches": "OSTATNIE WYNIKI",
+    "recommended": "REKOMENDOWANE",
+    "noResults": "Nie znaleziono wyników."
+  },
+  "HomePage": {
+    "title": "Witaj świecie!"
+  },
+  "SigninPage": {
+    "meta": {
+      "title": "Zaloguj się",
+      "description": "To jest opis"
+    },
+    "pageTitle": "Zaloguj się do {appName}",
+    "pageSubtitle": "Uzyskaj dostęp do swojego konta, zarządzaj ustawieniami i w pełni korzystaj z naszej platformy.",
+    "youAgree": "Klikając „zaloguj się”, zgadzasz się na nasze",
+    "terms": "Warunki korzystania z usługi",
+    "privacy": "Politykę prywatności",
+    "cookies": "Politykę plików cookie",
+    "providerBtn": "Zaloguj się za pomocą {provider}",
+    "loginErrorTitle": "Logowanie nie powiodło się",
+    "loginErrorDescription": "Wystąpił problem podczas logowania za pomocą {provider}. Spróbuj ponownie lub skorzystaj z innej metody logowania."
+  },
+  "TrendingPage": {
+    "filters": "Filtry",
+    "search": "Szukaj",
+    "breaking": "Na żywo",
+    "recommended": "Polecane",
+    "latest": "Najnowsze",
+    "mostPopular": "Najpopularniejsze",
+    "news": "Wiadomości",
+    "podcast": "Nasze ostatnie odcinki podcastu",
+    "readTime": "{minutes} min czytania",
+    "sponsored": "Sponsorowane",
+    "byPressclip": "Od Pressclip",
+    "loadMore": "Załaduj więcej",
+    "showAllEpisodes": "Pokaż wszystkie odcinki"
+  },
+  "SummariesPage": {
+    "filters": "Filtry",
+    "search": "Szukaj",
+    "summaries": "Streszczenia",
+    "mostPopular": "Najpopularniejsze",
+    "podcast": "Nasze ostatnie odcinki podcastu",
+    "readTime": "{minutes} min czytania",
+    "sponsored": "Sponsorowane",
+    "byPressclip": "Od Pressclip",
+    "loadMore": "Załaduj więcej",
+    "showAllEpisodes": "Pokaż wszystkie odcinki"
+  },
+  "NotesPage": {
+    "search": "Szukaj",
+    "filters": "Filtry",
+    "all": "Wszystkie",
+    "bookmarked": "Zakładki",
+    "clipped": "Wycięte",
+    "notes": "Notatki",
+    "loadMore": "Załaduj więcej"
+  },
+  "TemplatesPage": {
+    "templates": "Szablony",
+    "loadMore": "Załaduj więcej"
+  },
+  "SettingsPage": {
+    "title": "Ustawienia",
+    "description": "Zarządzaj ustawieniami konta i preferencjami.",
+    "general": "Ogólne",
+    "subscription": "Subskrypcja",
+    "delete": "Usuń konto",
+    "manageSubscription": "Zarządzaj swoją subskrypcją",
+    "generalSettings": "Zaktualizuj szczegóły konta",
+    "name": "Imię",
+    "update": "Zaktualizuj konto",
+    "deleteAccount": "Usuń konto użytkownika"
+  }
+}

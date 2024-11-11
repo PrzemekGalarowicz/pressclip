@@ -1,0 +1,204 @@
+{
+  "Global": {
+    "meta": {
+      "title": "Pressclip - Your AI-Powered Personal News Assistant",
+      "description": "The Future of News: Your AI-Powered Personal News Assistant with Smart Summaries and Intelligent Insights.",
+      "cookiePolicyTitle": "Cookie Policy",
+      "privacyPolicyTitle": "Privacy Policy",
+      "termsOfServiceTitle": "Terms of Service",
+      "trendingTitle": "Trending",
+      "summariesTitle": "Summaries",
+      "notesTitle": "Notes",
+      "templatesTitle": "Templates",
+      "pricingTitle": "Pricing",
+      "contactTitle": "Contact",
+      "supportTitle": "Support",
+      "notFoundPageTitle": "404 / Page not found"
+    },
+    "loading": "Loading...",
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "colorTheme": "Color theme",
+    "changeColorTheme": "Change color theme",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "published": "Published",
+    "search": "Search",
+    "anytime": "Anytime",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "lastWeek": "Last week",
+    "lastMonth": "Last month",
+    "last6Months": "Last 6 months",
+    "enjoyYourDay": "Enjoy your day!",
+    "todayIsFormattedDay": "{date, date, ::EEEE}",
+    "todayIsFormattedDate": "{date, date, ::dd MMMM, yyyy}",
+    "back": "Back",
+    "CtrOrCmd": "Ctr or Cmd + {keyboardKey}"
+  },
+  "Categories": {
+    "all": "All",
+    "general": "General",
+    "business": "Business",
+    "entertainment": "Entertainment",
+    "health": "Health",
+    "science": "Science",
+    "sports": "Sports",
+    "technology": "Technology",
+    "bookmarked": "Bookmarked"
+  },
+  "OptionsMenu": {
+    "options": "Options",
+    "view": "View",
+    "edit": "Edit",
+    "clip": "Clip",
+    "clipped": "Clipped",
+    "publish": "Publish",
+    "published": "Published",
+    "unpublish": "Unpublish",
+    "bookmark": "Bookmark",
+    "bookmarked": "Bookmarked",
+    "hide": "Hide",
+    "notInterested": "Not interested",
+    "deleteAlertTitle": "Are you absolutely sure?",
+    "deleteAlertDescription": "This action cannot be undone. This will permanently delete your press.",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "Chat": {
+    "label": "Ask a follow-up question",
+    "placeholder": "Need more details? Ask a follow-up question...",
+    "send": "Send",
+    "loading": "Waiting for a response from chat... Please wait."
+  },
+  "CookieDialog": {
+    "title": "Cookies Settings",
+    "description": "We use cookies to improve your experience on our website. By continuing to browse, you agree to our use of cookies.",
+    "accept": "Accept",
+    "reject": "Reject"
+  },
+  "Errors": {
+    "userNotAuthenticated": "User not authenticated.",
+    "errorCreating": "Error creating a {thing}: "
+  },
+  "ErrorAuth": {
+    "Configuration": "There was a problem with the server configuration. Please contact the administrator.",
+    "AccessDenied": "Access denied.",
+    "Verification": "The token has expired or has already been used.",
+    "Default": "An error occurred. Please try again later.",
+    "OAuthSignin": "Error during OAuth sign-in.",
+    "OAuthCallback": "Error processing OAuth response.",
+    "OAuthCreateAccount": "Failed to create OAuth account.",
+    "EmailCreateAccount": "Failed to create email account.",
+    "Callback": "An error occurred during OAuth handling.",
+    "OAuthAccountNotLinked": "The email is already linked to another account.",
+    "EmailSignin": "Failed to send email with verification token.",
+    "CredentialsSignin": "Incorrect credentials. Please try again.",
+    "SessionRequired": "You must be signed in to access this page."
+  },
+  "ErrorPage": {
+    "title": "Something went wrong!",
+    "tryAgain": "Try again"
+  },
+  "NotFoundPage": {
+    "meta": {
+      "title": "404 / Page not found"
+    },
+    "title": "The page that you're looking for doesn't exist.",
+    "goHome": "Go to the home page"
+  },
+  "AppMenu": {
+    "user": "User",
+    "new": "New",
+    "trending": "Trending",
+    "clipped": "Clipped",
+    "summaries": "Summaries",
+    "notes": "Notes",
+    "templates": "Templates",
+    "podcast": "Podcast",
+    "notifications": "Notifications",
+    "support": "Support",
+    "openAppMenu": "Open AppMenu",
+    "closeAppMenu": "Close AppMenu"
+  },
+  "SearchDialog": {
+    "search": "Search",
+    "searchPlaceholder": "Type a phrase and search...",
+    "result": "Result",
+    "lastSearches": "Last searches",
+    "recommended": "Recommended",
+    "noResults": "No results found."
+  },
+  "HomePage": {
+    "title": "Hello world!"
+  },
+  "SigninPage": {
+    "meta": {
+      "title": "Sign in",
+      "description": "This is a description"
+    },
+    "pageTitle": "Sign in to {appName}",
+    "pageSubtitle": "Access your account, manage your settings, and take full advantage of our platform.",
+    "youAgree": "By clicking sign in, you agree to our",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookies Policy",
+    "providerBtn": "Sign in with {provider}",
+    "loginErrorTitle": "Login Failed",
+    "loginErrorDescription": "There was an issue logging in with {provider}. Please try again or use another login method."
+  },
+  "TrendingPage": {
+    "filters": "Filters",
+    "search": "Search",
+    "breaking": "Breaking",
+    "recommended": "Recommended",
+    "latest": "Latest",
+    "mostPopular": "Most popular",
+    "news": "News",
+    "podcast": "Our podcast last episodes",
+    "readTime": "{minutes} mins read",
+    "byPressclip": "By Pressclip",
+    "sponsored": "Sponsored",
+    "loadMore": "Load more",
+    "showAllEpisodes": "Show all episodes"
+  },
+  "SummariesPage": {
+    "filters": "Filters",
+    "search": "Search",
+    "mostPopular": "Most popular",
+    "summaries": "Summaries",
+    "podcast": "Our podcast last episodes",
+    "readTime": "{minutes} mins read",
+    "byPressclip": "By Pressclip",
+    "sponsored": "Sponsored",
+    "loadMore": "Load more",
+    "showAllEpisodes": "Show all episodes"
+  },
+  "NotesPage": {
+    "search": "Search",
+    "filters": "Filters",
+    "all": "All",
+    "bookmarked": "Bookmarked",
+    "clipped": "Clipped",
+    "notes": "Notes",
+    "loadMore": "Load more"
+  },
+  "TemplatesPage": {
+    "templates": "Templates",
+    "loadMore": "Load more"
+  },
+  "SettingsPage": {
+    "title": "Settings",
+    "description": "Manage your account settings and preferences.",
+    "general": "General",
+    "subscription": "Subscription",
+    "delete": "Delete account",
+    "manageSubscription": "Manage your subscription",
+    "generalSettings": "Update your account details",
+    "name": "Name",
+    "update": "Update account",
+    "deleteAccount": "Delete user account"
+  }
+}
