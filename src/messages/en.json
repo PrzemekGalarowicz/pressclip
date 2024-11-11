@@ -120,6 +120,7 @@
     "podcast": "Podcast",
     "notifications": "Notifications",
     "support": "Support",
+    "subscription": "Manage subscription",
     "openAppMenu": "Open AppMenu",
     "closeAppMenu": "Close AppMenu"
   },
@@ -134,14 +135,14 @@
   "HomePage": {
     "title": "Hello world!"
   },
-  "SigninPage": {
+  "SignUpPage": {
     "meta": {
       "title": "Sign in",
       "description": "This is a description"
     },
     "pageTitle": "Sign in to {appName}",
     "pageSubtitle": "Access your account, manage your settings, and take full advantage of our platform.",
-    "youAgree": "By clicking sign in, you agree to our",
+    "youAgree": "By clicking continue, you agree to our",
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
     "cookies": "Cookies Policy",

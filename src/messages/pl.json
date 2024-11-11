@@ -120,6 +120,7 @@
     "podcast": "Podcast",
     "notifications": "Powiadomienia",
     "support": "Wsparcie",
+    "subscription": "Zarządzaj subskrypcją",
     "openAppMenu": "Otwórz menu",
     "closeAppMenu": "Zamknij menu"
   },
@@ -134,14 +135,14 @@
   "HomePage": {
     "title": "Witaj świecie!"
   },
-  "SigninPage": {
+  "SignUpPage": {
     "meta": {
       "title": "Zaloguj się",
       "description": "To jest opis"
     },
     "pageTitle": "Zaloguj się do {appName}",
     "pageSubtitle": "Uzyskaj dostęp do swojego konta, zarządzaj ustawieniami i w pełni korzystaj z naszej platformy.",
-    "youAgree": "Klikając „zaloguj się”, zgadzasz się na nasze",
+    "youAgree": "Klikając „kontynuuj”, zgadzasz się na nasze",
     "terms": "Warunki korzystania z usługi",
     "privacy": "Politykę prywatności",
     "cookies": "Politykę plików cookie",

@@ -1,5 +1,8 @@
 import './globals.css'
 import { cn } from '@/lib/utils'
+import { enUS, plPL } from '@clerk/localizations'
+import '@clerk/localizations'
+import { ClerkProvider } from '@clerk/nextjs'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import {
@@ -126,47 +129,56 @@ export default async function RootLayout(
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
-      {/* <GoogleTagManager
+    <ClerkProvider
+      localization={locale === 'en' ? enUS : locale === 'pl' ? plPL : enUS}
+      appearance={{
+        variables: {
+          colorPrimary: 'hsl(0 0% 9%)',
+        },
+      }}
+    >
+      <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
+        {/* <GoogleTagManager
         gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID!}
       /> */}
-      <head>
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
-        <meta
-          name="apple-mobile-web-app-title"
-          content={process.env.NEXT_PUBLIC_APP_NAME}
-        />
-        <meta name="msapplication-TileColor" content="#000000" />
+        <head>
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
+          <meta
+            name="apple-mobile-web-app-title"
+            content={process.env.NEXT_PUBLIC_APP_NAME}
+          />
+          <meta name="msapplication-TileColor" content="#000000" />
 
-        {/* FIXME: */}
-        {/* <script type="application/ld+json">
+          {/* FIXME: */}
+          {/* <script type="application/ld+json">
           {JSON.stringify(schemaMarkup)}
         </script> */}
-      </head>
+        </head>
 
-      <body
-        className={cn(
-          'min-h-screen bg-background font-sans antialiased',
-          fontSans.variable,
-          fontSerif.variable
-        )}
-        suppressHydrationWarning
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+        <body
+          className={cn(
+            'min-h-screen bg-background font-sans antialiased',
+            fontSans.variable,
+            fontSerif.variable
+          )}
+          suppressHydrationWarning
         >
-          <NextIntlClientProvider messages={messages}>
-            {props.children}
-            <Toaster />
-            <CookieDialog />
-          </NextIntlClientProvider>
-        </ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NextIntlClientProvider messages={messages}>
+              {props.children}
+              <Toaster />
+              <CookieDialog />
+            </NextIntlClientProvider>
+          </ThemeProvider>
 
-        {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID!} /> */}
-      </body>
-    </html>
+          {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID!} /> */}
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
