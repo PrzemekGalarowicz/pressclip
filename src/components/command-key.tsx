@@ -18,12 +18,12 @@ const CommandKey = React.forwardRef<HTMLDivElement, CommandKeyProps>(
       <div
         ref={ref}
         className={cn(
-          'flex items-center gap-1 text-xs font-medium text-gray-300 dark:text-gray-700',
+          'flex items-center gap-1 text-xs font-medium text-muted-foreground opacity-50',
           className
         )}
         {...props}
       >
-        <Command className="size-3" /> {keyboardKey}
+        <Command className="size-2" /> {keyboardKey}
         <span className="sr-only">{t('CtrOrCmd', { keyboardKey })}</span>
       </div>
     )

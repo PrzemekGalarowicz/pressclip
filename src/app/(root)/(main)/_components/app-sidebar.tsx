@@ -21,7 +21,7 @@ export function AppSidebar() {
         <Button
           variant="secondary"
           size="lg"
-          className="group/btn mx-5 mb-10 mt-8 hidden w-fit rounded-full px-6 md:flex"
+          className="group/btn mx-5 mb-10 mt-8 hidden w-fit px-6 md:flex"
         >
           <Plus className="mr-3 size-5 transition-all duration-150 group-hover/btn:scale-150" />
           {t('new')}

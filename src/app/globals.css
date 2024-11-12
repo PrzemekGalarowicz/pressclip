@@ -199,7 +199,11 @@ h6,
 /* Clerk */
 
 .cl-formButtonPrimary {
-  @apply inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+  @apply inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+}
+
+.cl-formButtonReset {
+  @apply rounded-full;
 }
 
 .cl-signUp-root .cl-logoBox {
@@ -394,7 +398,7 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 
 .cl-alternativeMethodsBlockButton,
 .cl-avatarImageActionsUpload {
-  @apply h-8 !shadow-none;
+  @apply h-8 rounded-full !shadow-none;
 }
 
 .cl-navbar {
@@ -544,8 +548,12 @@ h1[data-localization-key='userProfile.navbar.title'] {
   @apply border-b-0;
 }
 
+.cl-menuButton {
+  @apply size-8 rounded-full;
+}
+
 .cl-profileSectionPrimaryButton {
-  @apply h-9 border border-input px-4 py-3 dark:text-secondary-foreground;
+  @apply h-9 rounded-full border border-input px-4 py-3 dark:text-secondary-foreground;
 }
 
 .cl-profileSectionPrimaryButton__danger {

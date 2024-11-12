@@ -37,7 +37,8 @@
     "todayIsFormattedDay": "{date, date, ::EEEE}",
     "todayIsFormattedDate": "{date, date, ::dd MMMM, yyyy}",
     "back": "Back",
-    "CtrOrCmd": "Ctr or Cmd + {keyboardKey}"
+    "CtrOrCmd": "Ctr or Cmd + {keyboardKey}",
+    "upgrade": "Upgrade"
   },
   "Categories": {
     "all": "All",
@@ -152,6 +153,7 @@
     "loginErrorDescription": "There was an issue logging in with {provider}. Please try again or use another login method."
   },
   "TrendingPage": {
+    "trending": "Trending",
     "filters": "Filters",
     "search": "Search",
     "breaking": "Breaking",
@@ -185,11 +187,15 @@
     "bookmarked": "Bookmarked",
     "clipped": "Clipped",
     "notes": "Notes",
+    "note": "Note",
     "loadMore": "Load more"
   },
   "TemplatesPage": {
     "templates": "Templates",
     "loadMore": "Load more"
+  },
+  "ClippedPage": {
+    "clipped": "Clipped"
   },
   "SettingsPage": {
     "title": "Settings",

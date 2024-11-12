@@ -1,4 +1,8 @@
+import { Sparkles } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+
+import { AppHeader } from '../_components/app-header'
+import { AccentButton } from '@/components/accent-button'
 
 export async function generateMetadata() {
   const t = await getTranslations('Global')
@@ -9,6 +13,21 @@ export async function generateMetadata() {
   }
 }
 
-export default function TrendingPage() {
-  return <>Trending Page</>
+export default async function TrendingPage() {
+  const t = await getTranslations('TrendingPage')
+  const g = await getTranslations('Global')
+
+  return (
+    <>
+      <AppHeader title={t('trending')}>
+        <div className="ml-auto flex items-center gap-2">
+          <AccentButton href="/" icon={<Sparkles />}>
+            {g('upgrade')}
+          </AccentButton>
+        </div>
+      </AppHeader>
+
+      <div>Trending</div>
+    </>
+  )
 }

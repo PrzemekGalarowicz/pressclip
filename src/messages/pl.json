@@ -37,7 +37,8 @@
     "todayIsFormattedDay": "{date, date, ::EEEE}",
     "todayIsFormattedDate": "{date, date, ::dd MMMM, yyyy}",
     "back": "Powrót",
-    "CtrOrCmd": "Ctr lub Cmd + {keyboardKey}"
+    "CtrOrCmd": "Ctr lub Cmd + {keyboardKey}",
+    "upgrade": "Ulepsz swój plan"
   },
   "Categories": {
     "all": "Wszystkie",
@@ -152,6 +153,7 @@
     "loginErrorDescription": "Wystąpił problem podczas logowania za pomocą {provider}. Spróbuj ponownie lub skorzystaj z innej metody logowania."
   },
   "TrendingPage": {
+    "trending": "Trending",
     "filters": "Filtry",
     "search": "Szukaj",
     "breaking": "Na żywo",
@@ -190,6 +192,9 @@
   "TemplatesPage": {
     "templates": "Szablony",
     "loadMore": "Załaduj więcej"
+  },
+  "ClippedPage": {
+    "clipped": "Wycinki"
   },
   "SettingsPage": {
     "title": "Ustawienia",
