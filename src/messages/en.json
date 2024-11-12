@@ -122,8 +122,8 @@
     "notifications": "Notifications",
     "support": "Support",
     "subscription": "Manage subscription",
-    "openAppMenu": "Open AppMenu",
-    "closeAppMenu": "Close AppMenu"
+    "openMenu": "Open main menu",
+    "closeMenu": "Close main menu"
   },
   "SearchDialog": {
     "search": "Search",

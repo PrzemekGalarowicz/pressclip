@@ -122,8 +122,8 @@
     "notifications": "Powiadomienia",
     "support": "Wsparcie",
     "subscription": "Zarządzaj subskrypcją",
-    "openAppMenu": "Otwórz menu",
-    "closeAppMenu": "Zamknij menu"
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu"
   },
   "SearchDialog": {
     "search": "Szukaj",

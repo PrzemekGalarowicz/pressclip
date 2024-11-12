@@ -449,7 +449,7 @@ h1[data-localization-key='userProfile.navbar.title'] {
 /* Clerk - user dropdown */
 
 .cl-avatarBox {
-  @apply h-10 w-10;
+  @apply size-9 md:size-10;
 }
 
 .cl-userPreview {

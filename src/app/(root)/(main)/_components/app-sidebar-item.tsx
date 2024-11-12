@@ -20,10 +20,10 @@ export function AppSidebarItem(
     <Button
       variant="ghost"
       className={cn(
-        'mb-1 w-full justify-start rounded-none px-6 text-gray-700 transition-all duration-300 hover:rounded-r-lg hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-[#1f1f1f]',
+        'mb-1 h-12 w-full justify-start rounded-none px-6 transition-all duration-300 hover:rounded-r-lg hover:bg-gray-50 dark:hover:bg-[#1f1f1f] md:h-10',
         props.className,
         {
-          'relative rounded-r-lg bg-secondary text-black before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-black before:content-[""] dark:text-white dark:before:bg-white':
+          'relative bg-secondary text-black before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-black before:content-[""] dark:text-white dark:before:bg-white md:rounded-r-lg':
             isActive,
         }
       )}

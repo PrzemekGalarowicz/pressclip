@@ -29,11 +29,7 @@ export function ThemeDropdown(props: {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn('rounded-full', props.className)}
-        >
+        <Button variant="ghost" size="icon" className={cn(props.className)}>
           <Sun className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">{t('changeColorTheme')}</span>

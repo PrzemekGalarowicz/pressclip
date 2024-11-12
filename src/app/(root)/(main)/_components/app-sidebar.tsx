@@ -21,7 +21,7 @@ export function AppSidebar() {
         <Button
           variant="secondary"
           size="lg"
-          className="group/btn mx-5 mb-10 mt-8 w-fit rounded-full px-6"
+          className="group/btn mx-5 mb-10 mt-8 hidden w-fit rounded-full px-6 md:flex"
         >
           <Plus className="mr-3 size-5 transition-all duration-150 group-hover/btn:scale-150" />
           {t('new')}
@@ -48,7 +48,10 @@ export function AppSidebar() {
           </li>
         </ul>
 
-        <ul className="absolute bottom-3 left-5 z-10 flex gap-4" role="menu">
+        <ul
+          className="absolute bottom-3 left-5 z-10 hidden gap-4 md:flex"
+          role="menu"
+        >
           <li role="menuitem">
             <UserDropdown />
           </li>
