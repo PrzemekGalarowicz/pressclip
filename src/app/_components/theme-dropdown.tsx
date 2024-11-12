@@ -14,12 +14,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 
 export function ThemeDropdown(props: {
   className?: string
@@ -34,25 +28,17 @@ export function ThemeDropdown(props: {
 
   return (
     <DropdownMenu>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(props.className)}
-              >
-                <Sun className="size-4 rotate-0 scale-100 text-gray-700 transition-all dark:-rotate-90 dark:scale-0 dark:text-gray-300" />
-                <Moon className="absolute size-4 rotate-90 scale-0 text-gray-700 transition-all dark:rotate-0 dark:scale-100 dark:text-gray-300" />
-                <span className="sr-only">{t('changeColorTheme')}</span>
-              </Button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-
-          <TooltipContent side={props.side}>{t('colorTheme')}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn('rounded-full', props.className)}
+        >
+          <Sun className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">{t('changeColorTheme')}</span>
+        </Button>
+      </DropdownMenuTrigger>
       <DropdownMenuContent className="ml-4" align="end">
         <DropdownMenuRadioGroup value={theme} onValueChange={handleColorChange}>
           <DropdownMenuRadioItem

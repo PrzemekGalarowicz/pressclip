@@ -35,6 +35,14 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 0 0% 100%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -62,6 +70,14 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --sidebar-background: 0 0% 3.9%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 0 0% 3.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -183,7 +199,7 @@ h6,
 /* Clerk */
 
 .cl-formButtonPrimary {
-  @apply inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+  @apply inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
 }
 
 .cl-signUp-root .cl-logoBox {
@@ -216,7 +232,7 @@ h6,
 .cl-alert,
 .cl-phoneInputBox,
 .cl-userButtonPopoverCard {
-  @apply rounded-lg border border-input bg-background;
+  @apply rounded-md border border-input bg-background;
 }
 
 .cl-headerTitle,
@@ -326,7 +342,7 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 }
 
 .cl-card {
-  @apply rounded-lg shadow-md;
+  @apply rounded-md shadow-md;
 }
 
 .cl-userButtonPopoverCard {
@@ -365,7 +381,7 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 }
 
 .cl-cardBox {
-  @apply rounded-lg shadow-sm;
+  @apply rounded-md shadow-sm;
 }
 
 .cl-socialButtonsBlockButton {
@@ -376,16 +392,17 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
   @apply h-10 !border border-input text-muted-foreground;
 }
 
-.cl-alternativeMethodsBlockButton {
-  @apply h-10 !shadow-none;
+.cl-alternativeMethodsBlockButton,
+.cl-avatarImageActionsUpload {
+  @apply h-8 !shadow-none;
 }
 
 .cl-navbar {
-  @apply rounded-lg border-y border-l bg-gradient-to-t from-background to-background;
+  @apply rounded-md border-y border-l bg-gradient-to-t from-background to-background;
 }
 
 .cl-scrollBox {
-  @apply rounded-lg rounded-l-none border border-input bg-gradient-to-t from-background to-background;
+  @apply rounded-md rounded-l-none border border-input bg-gradient-to-t from-background to-background;
 }
 
 h1[data-localization-key='userProfile.navbar.title'] {
@@ -422,7 +439,7 @@ h1[data-localization-key='userProfile.navbar.title'] {
 }
 
 .cl-userButtonPopoverMain {
-  @apply rounded-lg border-input bg-background;
+  @apply rounded-md border-input bg-background;
 }
 
 .cl-userButtonPopoverCard {
@@ -430,6 +447,10 @@ h1[data-localization-key='userProfile.navbar.title'] {
 }
 
 /* Clerk - user dropdown */
+
+.cl-avatarBox {
+  @apply h-10 w-10;
+}
 
 .cl-userPreview {
   @apply gap-3 px-3 py-4;
@@ -510,7 +531,10 @@ h1[data-localization-key='userProfile.navbar.title'] {
   @apply p-3;
 }
 
-.cl-scrollBox,
+.cl-scrollBox {
+  @apply border-s-0;
+}
+
 .cl-profilePage > .cl-header {
   @apply border-0;
 }
