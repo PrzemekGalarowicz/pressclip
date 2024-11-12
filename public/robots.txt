@@ -1,0 +1,11 @@
+User-agent: *
+
+# Disallow everything by default
+Disallow: /
+
+# Allow specific public paths
+Allow: /
+Allow: /signin
+Allow: /signup
+Allow: /contact
+Allow: /faq
