@@ -32,7 +32,7 @@ const OptionMenuTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <Button
           size="icon"
           variant={variant || 'ghost'}
-          className={cn('opacity-90', className)}
+          className={cn('bg-background/90', className)}
           {...props}
         >
           <EllipsisVertical className="size-4 text-gray-700 dark:text-gray-300" />
