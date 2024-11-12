@@ -87,7 +87,7 @@ export async function generateMetadata() {
       creator: '@creator',
       images: `${process.env.NEXT_PUBLIC_BASE_URL}/logo.png`,
     },
-    appleWebApp: {
+    mobileWebApp: {
       capable: true,
       title: process.env.NEXT_PUBLIC_APP_NAME,
       statusBarStyle: 'black-translucent',

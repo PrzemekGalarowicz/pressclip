@@ -199,7 +199,12 @@ h6,
 /* Clerk */
 
 .cl-formButtonPrimary {
-  @apply inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+  @apply inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+}
+
+.cl-formButtonPrimary::after,
+.cl-formButtonPrimary::before {
+  @apply hidden;
 }
 
 .cl-formButtonReset {
@@ -215,7 +220,7 @@ h6,
 }
 
 .cl-socialButtons .cl-socialButtonsBlockButton {
-  @apply h-11 rounded-md !shadow-none;
+  @apply h-11 rounded-full !shadow-none;
 }
 
 .cl-header .cl-headerTitle,
@@ -453,7 +458,7 @@ h1[data-localization-key='userProfile.navbar.title'] {
 /* Clerk - user dropdown */
 
 .cl-avatarBox {
-  @apply size-9 md:size-10;
+  @apply size-9;
 }
 
 .cl-userPreview {
