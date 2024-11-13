@@ -207,10 +207,6 @@ h6,
   @apply hidden;
 }
 
-.cl-formButtonReset {
-  @apply rounded-full;
-}
-
 .cl-signUp-root .cl-logoBox {
   @apply lg:hidden;
 }
@@ -371,7 +367,7 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 }
 
 .cl-formButtonReset {
-  @apply text-foreground hover:bg-secondary;
+  @apply rounded-full text-foreground hover:bg-secondary hover:dark:!text-white;
 }
 
 .cl-footer {
