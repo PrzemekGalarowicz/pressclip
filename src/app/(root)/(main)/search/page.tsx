@@ -207,7 +207,7 @@ export default function SearchPage() {
 
   return (
     <SearchLayout>
-      <div className="w-full max-w-2xl">
+      <div className="mb-0.5 w-full max-w-2xl">
         <SearchForm />
       </div>
 
@@ -302,6 +302,7 @@ export default function SearchPage() {
                             )}
                           </FilterListItemIcon>
                         )}
+
                         {filter.label}
                       </FilterListItemLabel>
 
