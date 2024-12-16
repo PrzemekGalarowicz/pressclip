@@ -2,13 +2,34 @@
 
 import { AppSidebarItem } from './app-sidebar-item'
 import { UserDropdown } from './user-dropdown'
-import { Paperclip, Plus } from 'lucide-react'
+import {
+  Calendar,
+  FileText,
+  List,
+  Paperclip,
+  Plus,
+  Search,
+  TrendingUp,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { ThemeDropdown } from '@/app/_components/theme-dropdown'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
-import { Sidebar, SidebarContent } from '@/components/ui/sidebar'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarMenu,
+  SidebarMenuItem,
+} from '@/components/ui/sidebar'
+
+const items = [
+  { title: 'Clipped', url: '/search', icon: Paperclip },
+  { title: 'Lists', url: '/templates', icon: undefined },
+  { title: 'Searches', url: '/trending', icon: undefined },
+  { title: 'Scheduled', url: '/summaries', icon: undefined },
+  { title: 'Templates', url: '/notes', icon: undefined },
+]
 
 export function AppSidebar() {
   const t = useTranslations('AppMenu')
@@ -23,30 +44,20 @@ export function AppSidebar() {
           size="lg"
           className="group/btn mx-5 mb-10 mt-8 hidden w-fit px-6 md:flex"
         >
-          <Plus className="mr-3 size-5 transition-all duration-150 group-hover/btn:scale-150" />
-          {t('new')}
+          <Search className="mr-3 size-5 transition-all duration-300 group-hover/btn:scale-125" />
+          Search
         </Button>
 
-        <ul role="menu">
-          <li role="menuitem">
-            <AppSidebarItem href="/clipped">
-              <Paperclip className="mr-2 size-5" />
-              {t('clipped')}
-            </AppSidebarItem>
-          </li>
-          <li role="menuitem">
-            <AppSidebarItem href="/trending">{t('trending')}</AppSidebarItem>
-          </li>
-          <li role="menuitem">
-            <AppSidebarItem href="/summaries">{t('summaries')}</AppSidebarItem>
-          </li>
-          <li role="menuitem">
-            <AppSidebarItem href="/notes">{t('notes')}</AppSidebarItem>
-          </li>
-          <li role="menuitem">
-            <AppSidebarItem href="/templates">{t('templates')}</AppSidebarItem>
-          </li>
-        </ul>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <AppSidebarItem href={item.url}>
+                {item.icon && <item.icon />}
+                {item.title}
+              </AppSidebarItem>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
 
         <ul
           className="absolute bottom-3 left-5 z-10 hidden gap-4 md:flex"
