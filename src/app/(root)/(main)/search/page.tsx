@@ -1,12 +1,8 @@
 'use client'
 
-import {
-  DEFAULT_CATEGORIES,
-  DEFAULT_COUNTRIES,
-  DEFAULT_LANGUAGES,
-  DEFAULT_SOURCES,
-} from './_const'
-import { FilterActionType, FilterType } from './_type'
+import { DEFAULT_FILTERS } from './_const'
+import { FilterLabelType, FilterRecordType } from './_type'
+import { isDisabled, onExclude, onInclude, updateFilters } from './_utils'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -25,12 +21,9 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { useEscapeButton } from '@/hooks/use-escape-button'
+import { useIsClient } from '@/hooks/use-is-client'
 import { useOnClickOutside } from '@/hooks/use-on-click-outside'
 
-import {
-  ActiveFilterList,
-  ActiveFilterListItem,
-} from './_components/active-filter-list'
 import {
   FilterList,
   FilterListItem,
@@ -58,6 +51,48 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
+export function SearchLayout({
+  className,
+  children,
+  ...props
+}: React.ComponentPropsWithRef<'div'>) {
+  return (
+    <div
+      className={cn(
+        'flex h-screen flex-col items-center justify-center',
+        className
+      )}
+      {...props}
+    >
+      <header className="mb-8 flex flex-col items-center justify-center text-center">
+        <h1 className="mb-2 text-2xl">What are you looking for today?</h1>
+
+        <p className="text-sm text-muted-foreground">
+          We have a wide range of{' '}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="sm" variant="link" className="!h-auto !p-0">
+                  advanced search options
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Check out our advanced search options to help
+                <br /> you find exactly what you&apos;re looking for.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>{' '}
+          to help you find exactly what
+          <br /> you&apos;re looking for. Enter your search query below to get
+          started.
+        </p>
+      </header>
+
+      {children}
+    </div>
+  )
+}
+
 type FormData = z.infer<typeof formSchema>
 
 const formSchema = z.object({
@@ -68,7 +103,6 @@ const formSchema = z.object({
 
 export function SearchForm({
   className,
-  children,
   ...props
 }: React.ComponentPropsWithRef<'div'>) {
   const [submitting, startTransition] = useTransition()
@@ -129,127 +163,80 @@ export function SearchForm({
   )
 }
 
-export function SearchLayout({
-  className,
-  children,
-  ...props
-}: React.ComponentPropsWithRef<'div'>) {
-  return (
-    <div
-      className={cn(
-        'flex h-screen flex-col items-center justify-center',
-        className
-      )}
-      {...props}
-    >
-      <header className="mb-8 flex flex-col items-center justify-center text-center">
-        <h1 className="mb-2 text-2xl">What are you looking for today?</h1>
-
-        <p className="text-sm text-muted-foreground">
-          We have a wide range of{' '}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="sm" variant="link" className="!h-auto !p-0">
-                  advanced search options
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Check out our advanced search options to help
-                <br /> you find exactly what you&apos;re looking for.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>{' '}
-          to help you find exactly what
-          <br /> you&apos;re looking for. Enter your search query below to get
-          started.
-        </p>
-      </header>
-
-      <div className="w-full max-w-2xl">
-        <SearchForm />
-      </div>
-
-      {children}
-    </div>
-  )
-}
-
 export default function SearchPage() {
-  const [filters, setFilters] = React.useState<FilterType[]>([])
-  const [filteredFilters, setFilteredFilters] = React.useState<FilterType[]>([])
+  const isClient = useIsClient()
 
-  const [activeFilter, setActiveFilter] = React.useState<string>()
+  const [filters, setFilters] = React.useState<FilterRecordType>(() => {
+    if (!isClient) return DEFAULT_FILTERS
+    const data = localStorage.getItem('PRESSCLIP_FILTERS')
+    return data ? JSON.parse(data) : DEFAULT_FILTERS
+  })
+  const [filteredFilters, setFilteredFilters] =
+    React.useState<FilterRecordType>(() => {
+      if (!isClient) return DEFAULT_FILTERS
+      const data = localStorage.getItem('PRESSCLIP_FILTERED_FILTERS')
+      return data ? JSON.parse(data) : DEFAULT_FILTERS
+    })
+
+  const [activeFilter, setActiveFilter] = React.useState<
+    FilterLabelType | undefined
+  >(() => {
+    if (!isClient) return undefined
+    const data = localStorage.getItem('PRESSCLIP_ACTIVE_FILTER')
+    return data ? JSON.parse(data) : undefined
+  })
+
+  const onSetFilters = (filterName: FilterLabelType) => {
+    setFilters((prev) => updateFilters(prev, filterName))
+    localStorage.setItem('PRESSCLIP_FILTERS', JSON.stringify(filters))
+
+    setFilteredFilters((prev) => updateFilters(prev, filterName))
+    localStorage.setItem(
+      'PRESSCLIP_FILTERED_FILTERS',
+      JSON.stringify(filteredFilters)
+    )
+
+    setActiveFilter(filterName)
+    localStorage.setItem('PRESSCLIP_ACTIVE_FILTER', JSON.stringify(filterName))
+  }
 
   const ref = React.useRef<HTMLDivElement>(null)
   useOnClickOutside(ref, () => setActiveFilter(undefined))
 
   useEscapeButton(() => setActiveFilter(undefined))
 
-  React.useEffect(() => {
-    if (activeFilter === 'categories') {
-      setFilters(DEFAULT_CATEGORIES)
-      setFilteredFilters(DEFAULT_CATEGORIES)
-    } else if (activeFilter === 'sources') {
-      setFilters(DEFAULT_SOURCES)
-      setFilteredFilters(DEFAULT_SOURCES)
-    } else if (activeFilter === 'countries') {
-      setFilters(DEFAULT_COUNTRIES)
-      setFilteredFilters(DEFAULT_COUNTRIES)
-    } else if (activeFilter === 'languages') {
-      setFilters(DEFAULT_LANGUAGES)
-      setFilteredFilters(DEFAULT_LANGUAGES)
-    }
-  }, [activeFilter])
-
-  const onTakeAction = (
-    filters: FilterType[],
-    filter: FilterType,
-    actionType: FilterActionType
-  ) =>
-    filters.map((f) => ({
-      ...f,
-      [actionType]: f.label === filter.label ? true : f[actionType],
-    }))
-
-  const onClearAction = (filters: FilterType[]) =>
-    filters.map((f) => ({
-      ...f,
-      include: null,
-      exclude: null,
-    }))
-
-  const isDisabled = (filter: FilterType, actionType: FilterActionType) =>
-    filter[actionType] === null ? undefined : filter[actionType]
-
   return (
     <SearchLayout>
+      <div className="w-full max-w-2xl">
+        <SearchForm />
+      </div>
+
       <div ref={ref} className="h-[200px]">
         <FilterNav>
           <FilterNavItem
             active={activeFilter === 'categories'}
-            onClick={() => setActiveFilter('categories')}
+            onClick={() => onSetFilters('categories')}
           >
             <ClipboardList className="text-blue-600" />
             Categories
           </FilterNavItem>
           <FilterNavItem
             active={activeFilter === 'sources'}
-            onClick={() => setActiveFilter('sources')}
+            onClick={() => onSetFilters('sources')}
           >
             <Newspaper className="text-cyan-600" />
             Sources
           </FilterNavItem>
           <FilterNavItem
             active={activeFilter === 'countries'}
-            onClick={() => setActiveFilter('countries')}
+            onClick={() => onSetFilters('countries')}
           >
             <Earth className="text-sky-600" />
             Countries
           </FilterNavItem>
           <FilterNavItem
             active={activeFilter === 'languages'}
-            onClick={() => setActiveFilter('languages')}
+            onClick={() => onSetFilters('languages')}
           >
             <Languages className="text-lime-600" />
             Languages
@@ -258,50 +245,58 @@ export default function SearchPage() {
 
         {activeFilter && (
           <div className="mt-2 w-full max-w-lg rounded-2xl border bg-background p-4">
-            <div className="relative">
+            <div className="relative mb-2">
               <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 className="rounded-2xl border-none bg-muted pl-10"
                 placeholder="Search"
                 onChange={(e) => {
-                  const filtered = filters.filter((filter) =>
-                    filter.label
-                      .toLocaleUpperCase()
-                      .includes(e.target.value.toLocaleUpperCase())
-                  )
-                  setFilteredFilters(filtered)
+                  setFilteredFilters((prev) => ({
+                    ...prev,
+                    [activeFilter]: filters[activeFilter].filter((filter) =>
+                      filter.label
+                        .toLocaleUpperCase()
+                        .includes(e.target.value.toLocaleUpperCase())
+                    ),
+                  }))
                 }}
               />
             </div>
 
-            <ActiveFilterList>
-              {filters.map((filter) =>
+            {/* <ActiveFilterList>
+              {filters[activeFilter].map((filter) =>
                 filter.include || filter.exclude ? (
                   <ActiveFilterListItem
                     key={filter.label}
                     include={filter.include}
                     exclude={filter.exclude}
                     onClear={() => {
-                      setFilters(onClearAction(filters))
-                      setFilteredFilters(onClearAction(filteredFilters))
+                      setFilters((prev) => ({
+                        ...prev,
+                        [activeFilter]: onClearAction(prev[activeFilter]),
+                      }))
+                      setFilteredFilters((prev) => ({
+                        ...prev,
+                        [activeFilter]: onClearAction(prev[activeFilter]),
+                      }))
                     }}
                   >
                     {filter.label}
                   </ActiveFilterListItem>
                 ) : null
               )}
-            </ActiveFilterList>
+            </ActiveFilterList> */}
 
             <div className="max-h-[260px] overflow-y-auto">
               <FilterList>
-                {filteredFilters.map((filter, index) => (
+                {filteredFilters[activeFilter].map((filter, index) => (
                   <React.Fragment key={filter.label}>
                     <FilterListItem key={filter.label}>
                       <FilterListItemLabel>
                         {activeFilter !== 'sources' && (
                           <FilterListItemIcon>
                             {activeFilter === 'categories' ? (
-                              <filter.icon className="size-5 text-muted-foreground" />
+                              <filter.icon className="size-4 text-muted-foreground" />
                             ) : (
                               <CircleFlag countryCode={filter.icon as string} />
                             )}
@@ -315,10 +310,20 @@ export default function SearchPage() {
                           tooltip="Exclude"
                           disabled={isDisabled(filter, 'exclude')}
                           onClick={() => {
-                            setFilters(onTakeAction(filters, filter, 'exclude'))
-                            setFilteredFilters(
-                              onTakeAction(filteredFilters, filter, 'exclude')
-                            )
+                            setFilters((prev) => ({
+                              ...prev,
+                              [activeFilter]: onExclude(
+                                prev[activeFilter],
+                                filter
+                              ),
+                            }))
+                            setFilteredFilters((prev) => ({
+                              ...prev,
+                              [activeFilter]: onExclude(
+                                prev[activeFilter],
+                                filter
+                              ),
+                            }))
                           }}
                         >
                           <>
@@ -330,10 +335,20 @@ export default function SearchPage() {
                           tooltip="Include"
                           disabled={isDisabled(filter, 'include')}
                           onClick={() => {
-                            setFilters(onTakeAction(filters, filter, 'include'))
-                            setFilteredFilters(
-                              onTakeAction(filteredFilters, filter, 'include')
-                            )
+                            setFilters((prev) => ({
+                              ...prev,
+                              [activeFilter]: onInclude(
+                                prev[activeFilter],
+                                filter
+                              ),
+                            }))
+                            setFilteredFilters((prev) => ({
+                              ...prev,
+                              [activeFilter]: onInclude(
+                                prev[activeFilter],
+                                filter
+                              ),
+                            }))
                           }}
                         >
                           <>
@@ -344,7 +359,7 @@ export default function SearchPage() {
                       </FilterListItemAction>
                     </FilterListItem>
 
-                    {index < filters.length - 1 && <Separator />}
+                    {index < filters[activeFilter].length - 1 && <Separator />}
                   </React.Fragment>
                 ))}
               </FilterList>

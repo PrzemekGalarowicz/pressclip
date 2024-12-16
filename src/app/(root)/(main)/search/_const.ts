@@ -1,4 +1,4 @@
-import { FilterType } from './_type'
+import { FilterRecordType, FilterType } from './_type'
 import {
   Cpu,
   FerrisWheel,
@@ -167,3 +167,10 @@ export const DEFAULT_SOURCES: FilterType[] = [
   { label: 'BBC News', icon: 'bbc', include: null, exclude: null },
   { label: 'CNN News', icon: 'cnn', include: null, exclude: null },
 ]
+
+export const DEFAULT_FILTERS: FilterRecordType = {
+  categories: DEFAULT_CATEGORIES,
+  sources: DEFAULT_SOURCES,
+  countries: DEFAULT_COUNTRIES,
+  languages: DEFAULT_LANGUAGES,
+}

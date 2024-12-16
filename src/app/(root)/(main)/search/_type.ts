@@ -6,3 +6,11 @@ export type FilterType = {
 }
 
 export type FilterActionType = 'include' | 'exclude'
+
+export type FilterLabelType =
+  | 'categories'
+  | 'sources'
+  | 'countries'
+  | 'languages'
+
+export type FilterRecordType = Record<FilterLabelType, FilterType[]>

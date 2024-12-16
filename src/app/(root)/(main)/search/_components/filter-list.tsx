@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils'
 import * as React from 'react'
 
-import { AnimatedGroup } from '@/components/ui/animated-group'
 import { Button, ButtonProps } from '@/components/ui/button'
 import {
   Tooltip,
@@ -61,14 +60,16 @@ export function FilterListItemIcon({
   ...props
 }: React.ComponentPropsWithRef<'div'>) {
   return (
-    <div
-      className={cn(
-        'flex size-8 items-center justify-center rounded-full bg-muted',
-        className
-      )}
-      {...props}
-    >
-      {children}
+    <div>
+      <div
+        className={cn(
+          'flex size-8 items-center justify-center rounded-full bg-muted',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
     </div>
   )
 }
