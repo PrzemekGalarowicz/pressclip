@@ -9,6 +9,7 @@ import {
   CalendarCog,
   ClipboardList,
   Earth,
+  Globe,
   Languages,
   ListPlus,
   Minus,
@@ -235,6 +236,21 @@ export function SearchForm({
               </Button>
             </TooltipTrigger>
             <TooltipContent>Search in social media</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" disabled={submitting}>
+                <Globe
+                  strokeWidth={2}
+                  className="!size-5 text-muted-foreground"
+                />
+                <span className="sr-only">Search in the Internet</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Search in the Internet</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
