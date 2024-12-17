@@ -3,6 +3,12 @@
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip'
 import { X } from 'lucide-react'
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
 
@@ -70,20 +76,28 @@ export function MultiInput({
             <li key={index}>
               <Badge
                 variant="outline"
-                className="gap-2 pl-1.5 pr-0.5 font-normal"
+                className="gap-2 pl-1.5 pr-0.5 font-normal dark:border-muted-foreground/30"
               >
                 <span className="max-w-[100px] truncate text-muted-foreground">
                   {option}
                 </span>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="size-4"
-                  onClick={() => onRemove(index)}
-                >
-                  <X className="!size-3 text-muted-foreground" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="size-4"
+                        onClick={() => onRemove(index)}
+                      >
+                        <X className="!size-3 text-muted-foreground" />
+                        <span className="sr-only">Remove</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Remove</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </Badge>
             </li>
           ))}

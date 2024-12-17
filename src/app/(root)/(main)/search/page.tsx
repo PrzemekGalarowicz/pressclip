@@ -6,10 +6,13 @@ import { isDisabled, onExclude, onInclude, updateFilters } from './_utils'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
+  CalendarCog,
   ClipboardList,
   Earth,
   Languages,
+  ListPlus,
   Minus,
+  MonitorSmartphone,
   Newspaper,
   Plus,
   Search as SearchIcon,
@@ -96,9 +99,9 @@ export function SearchLayout({
 type FormData = z.infer<typeof formSchema>
 
 const formSchema = z.object({
-  keywords: z.array(
-    z.string().min(1, { message: 'At least one keyword is required' })
-  ),
+  keywords: z
+    .array(z.string().min(1, { message: 'At least one keyword is required' }))
+    .min(1, { message: 'At least one keyword is required' }),
 })
 
 export function SearchForm({
@@ -123,12 +126,12 @@ export function SearchForm({
 
   return (
     <section
-      className={cn('flex gap-1 rounded-3xl bg-muted p-2', className)}
+      className={cn('flex flex-col gap-2 rounded-3xl bg-muted p-2', className)}
       {...props}
     >
       <Form {...form}>
         <form
-          className="flex-1"
+          className="flex flex-1 items-center gap-2"
           noValidate
           onSubmit={form.handleSubmit(onSubmit)}
         >
@@ -136,7 +139,7 @@ export function SearchForm({
             control={form.control}
             name="keywords"
             render={({ field, fieldState }) => (
-              <FormItem className="px-1">
+              <FormItem className="flex-1 px-1">
                 <FormControl>
                   <MultiInput
                     className="rounded-xl border-0 bg-transparent placeholder:text-base placeholder:text-muted-foreground/75"
@@ -152,13 +155,89 @@ export function SearchForm({
               </FormItem>
             )}
           />
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="border border-muted-foreground/30"
+                  size="icon"
+                  disabled={submitting}
+                >
+                  <ListPlus strokeWidth={2} />
+                  <span className="sr-only">Add a new task</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Add a new task</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="border border-muted-foreground/30"
+                  size="icon"
+                  disabled={submitting}
+                >
+                  <CalendarCog strokeWidth={2} />
+                  <span className="sr-only">Add and schedule a task</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Add and schedule a task</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" disabled={submitting} className="shadow-md">
+                  <SearchIcon strokeWidth={3} />
+                  <span className="sr-only">Search</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Search</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </form>
       </Form>
 
-      <Button size="icon" disabled={submitting}>
-        <SearchIcon strokeWidth={3} className="!size-5" />
-        <span className="sr-only">Search</span>
-      </Button>
+      <div className="flex gap-1">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" disabled={submitting}>
+                <Newspaper strokeWidth={2} className="!size-5" />
+                <span className="sr-only">
+                  Search in newspagers, magazines, and blogs
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Search in newspagers,
+              <br /> magazines, and blogs
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" disabled={submitting}>
+                <MonitorSmartphone
+                  strokeWidth={2}
+                  className="!size-5 text-muted-foreground"
+                />
+                <span className="sr-only">Search in social media</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Search in social media</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     </section>
   )
 }
@@ -207,11 +286,11 @@ export default function SearchPage() {
 
   return (
     <SearchLayout>
-      <div className="mb-0.5 w-full max-w-2xl">
+      <div className="mb-0.5 w-full max-w-2xl transition-all duration-300">
         <SearchForm />
       </div>
 
-      <div ref={ref} className="h-[200px]">
+      <div ref={ref}>
         <FilterNav>
           <FilterNavItem
             active={activeFilter === 'categories'}

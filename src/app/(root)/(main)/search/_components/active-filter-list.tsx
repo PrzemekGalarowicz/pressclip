@@ -4,6 +4,12 @@ import * as React from 'react'
 
 import { Badge, BadgeProps } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 import { FilterType } from '../_type'
 
@@ -49,14 +55,22 @@ export function ActiveFilterListItem({
           {children}
         </span>
 
-        <Button
-          variant="outline"
-          size="icon"
-          className="size-4"
-          onClick={onClear}
-        >
-          <X className="!size-3 text-muted-foreground" />
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-4"
+                onClick={onClear}
+              >
+                <X className="!size-3 text-muted-foreground" />
+                <span className="sr-only">Remove</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Remove</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </Badge>
     </li>
   )

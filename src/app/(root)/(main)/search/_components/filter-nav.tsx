@@ -10,7 +10,7 @@ export function FilterNav({
   return (
     <ul
       className={cn(
-        'mt-2 flex w-full items-center justify-center gap-2',
+        'mt-2 flex w-full flex-wrap items-center justify-center gap-2',
         className
       )}
       {...props}

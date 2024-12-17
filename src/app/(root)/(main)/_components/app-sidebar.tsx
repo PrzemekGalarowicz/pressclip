@@ -7,7 +7,7 @@ import {
   CalendarClock,
   HelpCircle,
   List,
-  ListTodo,
+  ListRestart,
   Search,
   Settings,
 } from 'lucide-react'
@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/sidebar'
 
 const items = [
-  { title: 'Tasks', url: '/tasks', icon: ListTodo },
+  { title: 'Tasks', url: '/tasks', icon: ListRestart },
   { title: 'Schedule', url: '/schedule', icon: CalendarClock },
   { title: 'Lists', url: '/lists', icon: List },
   { title: 'Saved', url: '/saved', icon: Bookmark },
