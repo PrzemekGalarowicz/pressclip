@@ -1,8 +1,19 @@
 'use client'
 
-import { DEFAULT_FILTERS } from './_const'
-import { FilterLabelType, FilterRecordType } from './_type'
-import { isDisabled, onExclude, onInclude, updateFilters } from './_utils'
+import {
+  useDefaultCategories,
+  useDefaultCountries,
+  useDefaultLanguages,
+  useDefaultSources,
+} from './_hooks'
+import { FilterLabelType, FilterRecordType, FilterType } from './_type'
+import {
+  isDisabled,
+  onClearAction,
+  onExclude,
+  onInclude,
+  updateFilters,
+} from './_utils'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -18,6 +29,7 @@ import {
   Plus,
   Search as SearchIcon,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useTransition } from 'react'
 import * as React from 'react'
 import { CircleFlag } from 'react-circle-flags'
@@ -37,6 +49,7 @@ import {
   FilterListItemLabel,
 } from './_components/filter-list'
 import { FilterNav, FilterNavItem } from './_components/filter-nav'
+import { BadgeList, BadgeListItem } from '@/components/badge-list'
 import { MultiInput } from '@/components/multi-input'
 import { Button } from '@/components/ui/button'
 import {
@@ -60,6 +73,7 @@ export function SearchLayout({
   children,
   ...props
 }: React.ComponentPropsWithRef<'div'>) {
+  const t = useTranslations('SearchPage')
   return (
     <div
       className={cn(
@@ -69,26 +83,28 @@ export function SearchLayout({
       {...props}
     >
       <header className="mb-8 flex flex-col items-center justify-center text-center">
-        <h1 className="mb-2 text-2xl">What are you looking for today?</h1>
+        <h1 className="mb-2 text-2xl">{t('title')}</h1>
 
         <p className="text-sm text-muted-foreground">
-          We have a wide range of{' '}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="sm" variant="link" className="!h-auto !p-0">
-                  advanced search options
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Check out our advanced search options to help
-                <br /> you find exactly what you&apos;re looking for.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>{' '}
-          to help you find exactly what
-          <br /> you&apos;re looking for. Enter your search query below to get
-          started.
+          {t.rich('description', {
+            advancedSearchOptions: t('advancedSearchOptions'),
+            button: (chunks) => (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size="sm" variant="link" className="!h-auto !p-0">
+                      {chunks}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {t('advancedSearchOptionsTooltip')}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ),
+          })}
+          <br />
+          {t('description2')}
         </p>
       </header>
 
@@ -97,28 +113,177 @@ export function SearchLayout({
   )
 }
 
-type FormData = z.infer<typeof formSchema>
-
-const formSchema = z.object({
-  keywords: z
-    .array(z.string().min(1, { message: 'At least one keyword is required' }))
-    .min(1, { message: 'At least one keyword is required' }),
-})
-
-export function SearchForm({
+export function SearchFormLayout({
   className,
   ...props
 }: React.ComponentPropsWithRef<'div'>) {
+  const t = useTranslations('SearchPage')
+
+  const [activeForm, setActiveForm] = React.useState<
+    'news' | 'social_media' | 'internet'
+  >('news')
+
+  return (
+    <div
+      className={cn('flex flex-col gap-2 rounded-3xl bg-muted p-2', className)}
+      {...props}
+    >
+      {activeForm === 'news' && <SearchNewsForm />}
+      {activeForm === 'social_media' && <SearchSocialMediaForm />}
+      {activeForm === 'internet' && <SearchInternetForm />}
+
+      <nav className="flex gap-1">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setActiveForm('news')}
+              >
+                <Newspaper
+                  strokeWidth={2}
+                  className={cn(
+                    activeForm !== 'news' && 'text-muted-foreground'
+                  )}
+                />
+                <span className="sr-only">
+                  {t('searchInNewspapersMagazinesAndBlogs')}
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {t('searchInNewspapersMagazinesAndBlogs')}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setActiveForm('social_media')}
+              >
+                <MonitorSmartphone
+                  strokeWidth={2}
+                  className={cn(
+                    activeForm !== 'social_media' && 'text-muted-foreground'
+                  )}
+                />
+                <span className="sr-only">{t('searchInSocialMedia')}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('searchInSocialMedia')}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setActiveForm('internet')}
+              >
+                <Globe
+                  strokeWidth={2}
+                  className={cn(
+                    activeForm !== 'internet' && 'text-muted-foreground'
+                  )}
+                />
+                <span className="sr-only">{t('searchInTheInternet')}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('searchInTheInternet')}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </nav>
+    </div>
+  )
+}
+
+export function SearchFormTriggers({ submitting }: { submitting: boolean }) {
+  const t = useTranslations('SearchPage')
+  return (
+    <>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button type="button" variant="secondary" size="icon">
+              <ListPlus strokeWidth={2} />
+              <span className="sr-only">{t('addATask')}</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{t('addATask')}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button type="button" variant="secondary" size="icon">
+              <CalendarCog strokeWidth={2} />
+              <span className="sr-only">{t('addAndScheduleATask')}</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{t('addAndScheduleATask')}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="submit"
+              size="icon"
+              disabled={submitting}
+              className="shadow-md"
+            >
+              <SearchIcon strokeWidth={3} />
+              <span className="sr-only">{t('search')}</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{t('search')}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </>
+  )
+}
+
+function useNewsFormSchema() {
+  const t = useTranslations('SearchPage')
+
+  const schema = React.useMemo(() => {
+    return z.object({
+      keywords: z
+        .array(z.string().min(1, { message: t('atLeastOneKeywordIsRequired') }))
+        .min(1, { message: t('atLeastOneKeywordIsRequired') }),
+    })
+  }, [t])
+
+  return schema
+}
+type NewsFormData = z.infer<ReturnType<typeof useNewsFormSchema>>
+
+export function SearchNewsForm({
+  className,
+  ...props
+}: React.ComponentPropsWithRef<'form'>) {
+  const t = useTranslations('SearchPage')
+
   const [submitting, startTransition] = useTransition()
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const newsFormSchema = useNewsFormSchema()
+  const form = useForm<NewsFormData>({
+    resolver: zodResolver(newsFormSchema),
     defaultValues: {
       keywords: [],
     },
   })
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: NewsFormData) => {
     startTransition(async () => {
       console.log('onSubmit', data)
       form.reset()
@@ -126,140 +291,200 @@ export function SearchForm({
   }
 
   return (
-    <section
-      className={cn('flex flex-col gap-2 rounded-3xl bg-muted p-2', className)}
-      {...props}
-    >
-      <Form {...form}>
-        <form
-          className="flex flex-1 items-center gap-2"
-          noValidate
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="keywords"
-            render={({ field, fieldState }) => (
-              <FormItem className="flex-1 px-1">
-                <FormControl>
-                  <MultiInput
-                    className="rounded-xl border-0 bg-transparent placeholder:text-base placeholder:text-muted-foreground/75"
-                    type="search"
-                    placeholder="Add keywords releated to the topic your're looking for..."
-                    aria-invalid={fieldState.error ? 'true' : 'false'}
-                    selectedOptions={field.value}
-                    onCheckedChange={field.onChange}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="border border-muted-foreground/30"
-                  size="icon"
-                  disabled={submitting}
-                >
-                  <ListPlus strokeWidth={2} />
-                  <span className="sr-only">Add a new task</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add a new task</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="border border-muted-foreground/30"
-                  size="icon"
-                  disabled={submitting}
-                >
-                  <CalendarCog strokeWidth={2} />
-                  <span className="sr-only">Add and schedule a task</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add and schedule a task</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" disabled={submitting} className="shadow-md">
-                  <SearchIcon strokeWidth={3} />
-                  <span className="sr-only">Search</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Search</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </form>
-      </Form>
-
-      <div className="flex gap-1">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={submitting}>
-                <Newspaper strokeWidth={2} className="!size-5" />
-                <span className="sr-only">
-                  Search in newspagers, magazines, and blogs
-                </span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Search in newspagers,
-              <br /> magazines, and blogs
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={submitting}>
-                <MonitorSmartphone
-                  strokeWidth={2}
-                  className="!size-5 text-muted-foreground"
+    <Form {...form}>
+      <form
+        className={cn('flex flex-1 items-baseline gap-2', className)}
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="keywords"
+          render={({ field, fieldState }) => (
+            <FormItem className="flex-1 px-1">
+              <FormControl>
+                <MultiInput
+                  className={cn(
+                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
+                    fieldState.error && 'border-destructive'
+                  )}
+                  type="search"
+                  placeholder={t('addKeywordsPlaceholder')}
+                  aria-invalid={fieldState.error ? 'true' : 'false'}
+                  selectedOptions={field.value}
+                  onCheckedChange={field.onChange}
+                  {...field}
                 />
-                <span className="sr-only">Search in social media</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Search in social media</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+              </FormControl>
+              <FormMessage className="px-3" />
+            </FormItem>
+          )}
+        />
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={submitting}>
-                <Globe
-                  strokeWidth={2}
-                  className="!size-5 text-muted-foreground"
+        <SearchFormTriggers submitting={submitting} />
+      </form>
+    </Form>
+  )
+}
+
+function useSocialMediaFormSchema() {
+  const t = useTranslations('SearchPage')
+
+  const schema = React.useMemo(() => {
+    return z.object({
+      query: z.string().min(1, { message: t('atLeastOneCharacterIsRequired') }),
+    })
+  }, [t])
+
+  return schema
+}
+type SocialMediaFormData = z.infer<ReturnType<typeof useSocialMediaFormSchema>>
+
+export function SearchSocialMediaForm({
+  className,
+  ...props
+}: React.ComponentPropsWithRef<'form'>) {
+  const t = useTranslations('SearchPage')
+
+  const [submitting, startTransition] = useTransition()
+
+  const socialMediaFormSchema = useSocialMediaFormSchema()
+  const form = useForm<SocialMediaFormData>({
+    resolver: zodResolver(socialMediaFormSchema),
+    defaultValues: {
+      query: '',
+    },
+  })
+
+  const onSubmit = (data: SocialMediaFormData) => {
+    startTransition(async () => {
+      console.log('onSubmit', data)
+      form.reset()
+    })
+  }
+
+  return (
+    <Form {...form}>
+      <form
+        className={cn('flex flex-1 items-baseline gap-2', className)}
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="query"
+          render={({ field, fieldState }) => (
+            <FormItem className="flex-1 px-1">
+              <FormControl>
+                <Input
+                  className={cn(
+                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
+                    fieldState.error && 'border-destructive'
+                  )}
+                  placeholder={t('searchInSocialMediaPlaceholder')}
+                  aria-invalid={fieldState.error ? 'true' : 'false'}
+                  {...field}
                 />
-                <span className="sr-only">Search in the Internet</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Search in the Internet</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-    </section>
+              </FormControl>
+              <FormMessage className="px-3" />
+            </FormItem>
+          )}
+        />
+
+        <SearchFormTriggers submitting={submitting} />
+      </form>
+    </Form>
+  )
+}
+
+function useInternetFormSchema() {
+  const t = useTranslations('SearchPage')
+
+  const schema = React.useMemo(() => {
+    return z.object({
+      query: z.string().min(1, { message: t('atLeastOneCharacterIsRequired') }),
+    })
+  }, [t])
+
+  return schema
+}
+type InternetFormData = z.infer<ReturnType<typeof useInternetFormSchema>>
+
+export function SearchInternetForm({
+  className,
+  ...props
+}: React.ComponentPropsWithRef<'form'>) {
+  const t = useTranslations('SearchPage')
+
+  const [submitting, startTransition] = useTransition()
+
+  const internetFormSchema = useInternetFormSchema()
+  const form = useForm<InternetFormData>({
+    resolver: zodResolver(internetFormSchema),
+    defaultValues: {
+      query: '',
+    },
+  })
+
+  const onSubmit = (data: InternetFormData) => {
+    startTransition(async () => {
+      console.log('onSubmit', data)
+      form.reset()
+    })
+  }
+
+  return (
+    <Form {...form}>
+      <form
+        className={cn('flex flex-1 items-baseline gap-2', className)}
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="query"
+          render={({ field, fieldState }) => (
+            <FormItem className="flex-1 px-1">
+              <FormControl>
+                <Input
+                  className={cn(
+                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
+                    fieldState.error && 'border-destructive'
+                  )}
+                  placeholder={t('searchInTheInternetPlaceholder')}
+                  aria-invalid={fieldState.error ? 'true' : 'false'}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage className="px-3" />
+            </FormItem>
+          )}
+        />
+
+        <SearchFormTriggers submitting={submitting} />
+      </form>
+    </Form>
   )
 }
 
 export default function SearchPage() {
+  const t = useTranslations('SearchPage')
+
   const isClient = useIsClient()
+
+  const defaultCategories: FilterType[] = useDefaultCategories()
+  const defaultSources: FilterType[] = useDefaultSources()
+  const defaultCountries: FilterType[] = useDefaultCountries()
+  const defaultLanguages: FilterType[] = useDefaultLanguages()
+  const DEFAULT_FILTERS: FilterRecordType = {
+    categories: defaultCategories,
+    sources: defaultSources,
+    countries: defaultCountries,
+    languages: defaultLanguages,
+  }
 
   const [filters, setFilters] = React.useState<FilterRecordType>(() => {
     if (!isClient) return DEFAULT_FILTERS
@@ -303,7 +528,7 @@ export default function SearchPage() {
   return (
     <SearchLayout>
       <div className="mb-0.5 w-full max-w-2xl transition-all duration-300">
-        <SearchForm />
+        <SearchFormLayout />
       </div>
 
       <div ref={ref}>
@@ -313,28 +538,28 @@ export default function SearchPage() {
             onClick={() => onSetFilters('categories')}
           >
             <ClipboardList className="text-blue-600" />
-            Categories
+            {t('categories')}
           </FilterNavItem>
           <FilterNavItem
             active={activeFilter === 'sources'}
             onClick={() => onSetFilters('sources')}
           >
             <Newspaper className="text-cyan-600" />
-            Sources
+            {t('sources')}
           </FilterNavItem>
           <FilterNavItem
             active={activeFilter === 'countries'}
             onClick={() => onSetFilters('countries')}
           >
             <Earth className="text-sky-600" />
-            Countries
+            {t('countries')}
           </FilterNavItem>
           <FilterNavItem
             active={activeFilter === 'languages'}
             onClick={() => onSetFilters('languages')}
           >
             <Languages className="text-lime-600" />
-            Languages
+            {t('languages')}
           </FilterNavItem>
         </FilterNav>
 
@@ -344,7 +569,7 @@ export default function SearchPage() {
               <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 className="rounded-2xl border-none bg-muted pl-10"
-                placeholder="Search"
+                placeholder={t('search')}
                 onChange={(e) => {
                   setFilteredFilters((prev) => ({
                     ...prev,
@@ -358,14 +583,14 @@ export default function SearchPage() {
               />
             </div>
 
-            {/* <ActiveFilterList>
+            <BadgeList>
               {filters[activeFilter].map((filter) =>
                 filter.include || filter.exclude ? (
-                  <ActiveFilterListItem
+                  <BadgeListItem
                     key={filter.label}
                     include={filter.include}
                     exclude={filter.exclude}
-                    onClear={() => {
+                    onRemove={() => {
                       setFilters((prev) => ({
                         ...prev,
                         [activeFilter]: onClearAction(prev[activeFilter]),
@@ -377,16 +602,16 @@ export default function SearchPage() {
                     }}
                   >
                     {filter.label}
-                  </ActiveFilterListItem>
+                  </BadgeListItem>
                 ) : null
               )}
-            </ActiveFilterList> */}
+            </BadgeList>
 
             <div className="max-h-[260px] overflow-y-auto">
               <FilterList>
                 {filteredFilters[activeFilter].map((filter, index) => (
                   <React.Fragment key={filter.label}>
-                    <FilterListItem key={filter.label}>
+                    <FilterListItem>
                       <FilterListItemLabel>
                         {activeFilter !== 'sources' && (
                           <FilterListItemIcon>
@@ -403,7 +628,7 @@ export default function SearchPage() {
 
                       <FilterListItemAction>
                         <FilterListItemActionButton
-                          tooltip="Exclude"
+                          tooltip={t('exclude')}
                           disabled={isDisabled(filter, 'exclude')}
                           onClick={() => {
                             setFilters((prev) => ({
@@ -424,11 +649,11 @@ export default function SearchPage() {
                         >
                           <>
                             <Minus className="text-red-500" />
-                            <span className="sr-only">Exclude</span>
+                            <span className="sr-only">{t('exclude')}</span>
                           </>
                         </FilterListItemActionButton>
                         <FilterListItemActionButton
-                          tooltip="Include"
+                          tooltip={t('include')}
                           disabled={isDisabled(filter, 'include')}
                           onClick={() => {
                             setFilters((prev) => ({
@@ -449,7 +674,7 @@ export default function SearchPage() {
                         >
                           <>
                             <Plus className="text-green-500" />
-                            <span className="sr-only">Include</span>
+                            <span className="sr-only">{t('include')}</span>
                           </>
                         </FilterListItemActionButton>
                       </FilterListItemAction>

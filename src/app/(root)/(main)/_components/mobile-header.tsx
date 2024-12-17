@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
 export function MobileHeader({ className }: { className?: string }) {
-  const t = useTranslations('AppMenu')
+  const t = useTranslations('AppSidebar')
 
   return (
     <header
@@ -24,7 +24,7 @@ export function MobileHeader({ className }: { className?: string }) {
 
       <Button variant="ghost" size="icon">
         <Search className="size-4" />
-        <span className="sr-only">{t('new')}</span>
+        <span className="sr-only">{t('search')}</span>
       </Button>
 
       <LogoSignature href="/" />

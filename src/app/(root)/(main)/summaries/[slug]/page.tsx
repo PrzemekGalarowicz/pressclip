@@ -1,8 +1,8 @@
 import { Sparkles } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
-import { AccentButton } from '@/components/accent-button'
 import { AppHeader } from '../../_components/app-header'
+import { AccentButton } from '@/components/accent-button'
 
 export async function generateMetadata() {
   const t = await getTranslations('Global')
@@ -27,10 +27,15 @@ export default async function SummaryPage() {
         </div>
       </AppHeader>
 
-      <div>Clipped
-
-        <iframe src="https://www.wired.com/story/wayves-ai-self-driving-system-is-here-to-drive-like-a-human-and-take-on-waymo-and-tesla/" className="h-[90vh] w-1/2" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
-
+      <div>
+        Clipped
+        <iframe
+          src="https://www.wired.com/story/wayves-ai-self-driving-system-is-here-to-drive-like-a-human-and-take-on-waymo-and-tesla/"
+          className="h-[90vh] w-1/2"
+          allowFullScreen
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin"
+        ></iframe>
       </div>
     </>
   )

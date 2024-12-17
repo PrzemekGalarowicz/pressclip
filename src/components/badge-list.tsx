@@ -1,5 +1,8 @@
+'use client'
+
 import { cn } from '@/lib/utils'
 import { Minus, Plus, X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import * as React from 'react'
 
 import { Badge, BadgeProps } from '@/components/ui/badge'
@@ -11,9 +14,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-import { FilterType } from '../_type'
-
-export function ActiveFilterList({
+export function BadgeList({
   className,
   children,
   ...props
@@ -28,18 +29,20 @@ export function ActiveFilterList({
   )
 }
 
-export function ActiveFilterListItem({
+export function BadgeListItem({
   className,
   children,
   include,
   exclude,
-  onClear,
+  onRemove,
   ...props
 }: BadgeProps & {
-  include?: FilterType['include']
-  exclude?: FilterType['exclude']
-  onClear?: () => void
+  include?: boolean | null
+  exclude?: boolean | null
+  onRemove?: () => void
 }) {
+  const t = useTranslations('Global')
+
   return (
     <li>
       <Badge
@@ -62,13 +65,13 @@ export function ActiveFilterListItem({
                 variant="outline"
                 size="icon"
                 className="size-4"
-                onClick={onClear}
+                onClick={onRemove}
               >
                 <X className="!size-3 text-muted-foreground" />
-                <span className="sr-only">Remove</span>
+                <span className="sr-only">{t('remove')}</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Remove</TooltipContent>
+            <TooltipContent>{t('remove')}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </Badge>

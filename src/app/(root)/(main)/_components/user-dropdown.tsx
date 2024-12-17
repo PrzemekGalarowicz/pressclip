@@ -20,6 +20,11 @@ export function UserDropdown() {
           labelIcon={<DotIcon />}
           href="/support"
         />
+        <UserButton.Link
+          label={t('settings')}
+          labelIcon={<DotIcon />}
+          href="/settings"
+        />
       </UserButton.MenuItems>
     </UserButton>
   )

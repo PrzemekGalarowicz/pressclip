@@ -5,12 +5,13 @@ import { UserDropdown } from './user-dropdown'
 import {
   Bookmark,
   CalendarClock,
-  HelpCircle,
+  LifeBuoy,
   List,
   ListRestart,
   Search,
   Settings,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 import { ThemeDropdown } from '@/app/_components/theme-dropdown'
@@ -28,19 +29,21 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
 
-const items = [
-  { title: 'Tasks', url: '/tasks', icon: ListRestart },
-  { title: 'Schedule', url: '/schedule', icon: CalendarClock },
-  { title: 'Lists', url: '/lists', icon: List },
-  { title: 'Saved', url: '/saved', icon: Bookmark },
-]
-
-const secondaryItems = [
-  { title: 'Settings', url: '/settings', icon: Settings },
-  { title: 'Help', url: '/help', icon: HelpCircle },
-]
-
 export function AppSidebar() {
+  const t = useTranslations('AppSidebar')
+
+  const items = [
+    { title: t('tasks'), url: '/tasks', icon: ListRestart },
+    { title: t('schedule'), url: '/schedule', icon: CalendarClock },
+    { title: t('lists'), url: '/lists', icon: List },
+    { title: t('saved'), url: '/saved', icon: Bookmark },
+  ]
+
+  const secondaryItems = [
+    { title: t('settings'), url: '/settings', icon: Settings },
+    { title: t('support'), url: '/support', icon: LifeBuoy },
+  ]
+
   return (
     <Sidebar className="!border-0">
       <SidebarHeader>
@@ -53,7 +56,7 @@ export function AppSidebar() {
           className="group/btn mx-5 mb-8 mt-6 hidden w-fit px-6 md:flex"
         >
           <Search className="mr-3 size-5 transition-all duration-300 group-hover/btn:scale-125" />
-          Search
+          {t('search')}
         </Button>
 
         <SidebarMenu>

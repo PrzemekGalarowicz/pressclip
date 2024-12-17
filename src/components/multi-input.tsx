@@ -1,15 +1,7 @@
 'use client'
 
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
+import { BadgeList, BadgeListItem } from './badge-list'
 import { Input } from './ui/input'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from './ui/tooltip'
-import { X } from 'lucide-react'
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
 
 interface MultiInputProps
@@ -71,37 +63,13 @@ export function MultiInput({
       />
 
       {Array.isArray(selectedOptions) && !!selectedOptions.length && (
-        <ul className="justify-startflex mt-2 flex flex-wrap items-start gap-1 p-1">
+        <BadgeList className="justify-startflex mt-2 items-start">
           {selectedOptions.map((option, index) => (
-            <li key={index}>
-              <Badge
-                variant="outline"
-                className="gap-2 pl-1.5 pr-0.5 font-normal dark:border-muted-foreground/30"
-              >
-                <span className="max-w-[100px] truncate text-muted-foreground">
-                  {option}
-                </span>
-
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="size-4"
-                        onClick={() => onRemove(index)}
-                      >
-                        <X className="!size-3 text-muted-foreground" />
-                        <span className="sr-only">Remove</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Remove</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </Badge>
-            </li>
+            <BadgeListItem key={index} onRemove={() => onRemove(index)}>
+              {option}
+            </BadgeListItem>
           ))}
-        </ul>
+        </BadgeList>
       )}
     </>
   )
