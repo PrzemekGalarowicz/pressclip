@@ -8,18 +8,18 @@ export async function generateMetadata() {
   const t = await getTranslations('Global')
 
   return {
-    title: `${t('meta.templatesTitle')} / ${process.env.NEXT_PUBLIC_APP_NAME}`,
+    title: `${t('meta.scheduleTitle')} / ${process.env.NEXT_PUBLIC_APP_NAME}`,
     robots: 'noindex',
   }
 }
 
-export default async function TemplatesPage() {
-  const t = await getTranslations('TemplatesPage')
+export default async function SchedulePage() {
+  const t = await getTranslations('SchedulePage')
   const g = await getTranslations('Global')
 
   return (
     <>
-      <AppHeader title={t('templates')}>
+      <AppHeader title={t('schedule')}>
         <div className="ml-auto flex items-center gap-2">
           <AccentButton href="/" icon={<Sparkles />}>
             {g('upgrade')}
@@ -27,7 +27,7 @@ export default async function TemplatesPage() {
         </div>
       </AppHeader>
 
-      <div>Templates</div>
+      <div>Schedule</div>
     </>
   )
 }

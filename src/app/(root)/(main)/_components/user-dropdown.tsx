@@ -5,7 +5,7 @@ import { DotIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 export function UserDropdown() {
-  const t = useTranslations('AppMenu')
+  const t = useTranslations('UserDropdown')
 
   return (
     <UserButton>

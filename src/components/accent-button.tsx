@@ -28,7 +28,7 @@ export function AccentButton({
     >
       <Link href={href}>
         {icon && (
-          <span className="mr-2 flex size-4 items-center justify-center bg-clip-text text-red-500 dark:text-red-300">
+          <span className="flex size-4 items-center justify-center bg-clip-text text-red-500 dark:text-red-300">
             {icon}
           </span>
         )}

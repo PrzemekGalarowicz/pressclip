@@ -8,18 +8,18 @@ export async function generateMetadata() {
   const t = await getTranslations('Global')
 
   return {
-    title: `${t('meta.clippedTitle')} / ${process.env.NEXT_PUBLIC_APP_NAME}`,
+    title: `${t('meta.bookmarksTitle')} / ${process.env.NEXT_PUBLIC_APP_NAME}`,
     robots: 'noindex',
   }
 }
 
-export default async function ClippedPage() {
-  const t = await getTranslations('ClippedPage')
+export default async function BookmarksPage() {
+  const t = await getTranslations('BookmarksPage')
   const g = await getTranslations('Global')
 
   return (
     <>
-      <AppHeader title={t('clipped')}>
+      <AppHeader title={t('bookmarks')}>
         <div className="ml-auto flex items-center gap-2">
           <AccentButton href="/" icon={<Sparkles />}>
             {g('upgrade')}
@@ -27,7 +27,7 @@ export default async function ClippedPage() {
         </div>
       </AppHeader>
 
-      <div>Clipped</div>
+      <div>Bookmarks</div>
     </>
   )
 }

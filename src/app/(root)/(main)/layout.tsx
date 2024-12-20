@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <MobileHeader className="flex md:hidden" />
       <AppSidebar />
-      <main className="w-full flex-1 px-4">{children}</main>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4">{children}</main>
     </SidebarProvider>
   )
 }

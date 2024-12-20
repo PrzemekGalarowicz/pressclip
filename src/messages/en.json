@@ -8,8 +8,9 @@
       "termsOfServiceTitle": "Terms of Service",
       "trendingTitle": "Trending",
       "summariesTitle": "Summaries",
-      "notesTitle": "Notes",
-      "templatesTitle": "Templates",
+      "searchesTitle": "Searches",
+      "bookmarksTitle": "Bookmarks",
+      "scheduleTitle": "Schedule",
       "pricingTitle": "Pricing",
       "contactTitle": "Contact",
       "supportTitle": "Support",
@@ -39,7 +40,12 @@
     "back": "Back",
     "CtrOrCmd": "Ctr or Cmd + {keyboardKey}",
     "upgrade": "Upgrade",
-    "remove": "Remove"
+    "remove": "Remove",
+    "moreOptions": "More options",
+    "open": "Open",
+    "rename": "Rename",
+    "share": "Share",
+    "delete": "Delete"
   },
   "Categories": {
     "all": "All",
@@ -238,13 +244,25 @@
     "ukrainian": "Ukrainian"
   },
   "AppSidebar": {
-    "tasks": "Tasks",
+    "search": "Search",
+    "trending": "Trending",
+    "bookmarks": "Bookmarks",
+    "searches": "Searches",
     "schedule": "Schedule",
-    "lists": "Lists",
-    "saved": "Saved",
-    "settings": "Settings",
+    "workspaces": "Workspaces",
+    "add": "Add new subject",
+    "more": "More",
+    "open": "Open",
+    "rename": "Rename",
+    "share": "Share",
+    "delete": "Delete",
+    "toggle": "Toggle Menu",
+    "subjects": "Subjects"
+  },
+  "UserDropdown": {
+    "subscription": "Subscription",
     "support": "Support",
-    "search": "Search"
+    "settings": "Settings"
   },
   "SearchDialog": {
     "search": "Search",
@@ -300,23 +318,6 @@
     "loadMore": "Load more",
     "showAllEpisodes": "Show all episodes"
   },
-  "NotesPage": {
-    "search": "Search",
-    "filters": "Filters",
-    "all": "All",
-    "bookmarked": "Bookmarked",
-    "clipped": "Clipped",
-    "notes": "Notes",
-    "note": "Note",
-    "loadMore": "Load more"
-  },
-  "TemplatesPage": {
-    "templates": "Templates",
-    "loadMore": "Load more"
-  },
-  "ClippedPage": {
-    "clipped": "Clipped"
-  },
   "SettingsPage": {
     "title": "Settings",
     "description": "Manage your account settings and preferences.",
@@ -328,6 +329,18 @@
     "name": "Name",
     "update": "Update account",
     "deleteAccount": "Delete user account"
+  },
+  "BookmarksPage": {
+    "bookmarks": "Bookmarks",
+    "loadMore": "Load more"
+  },
+  "SearchesPage": {
+    "searches": "Searches",
+    "loadMore": "Load more"
+  },
+  "SchedulePage": {
+    "schedule": "Schedule",
+    "loadMore": "Load more"
   },
   "SearchPage": {
     "title": "What are you looking for today?",
