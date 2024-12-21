@@ -29,7 +29,7 @@ export function FilterListItem({
   return (
     <li
       className={cn(
-        'my-px flex cursor-pointer items-center justify-between gap-4 rounded-2xl p-1.5 transition-colors duration-150 hover:bg-muted/40',
+        'mb-px flex cursor-pointer items-center justify-between rounded-lg p-0.5 transition-colors duration-150 hover:bg-muted',
         className
       )}
       {...props}
@@ -46,7 +46,7 @@ export function FilterListItemLabel({
 }: React.ComponentPropsWithRef<'div'>) {
   return (
     <div
-      className={cn('flex items-center gap-4 text-sm', className)}
+      className={cn('flex items-center gap-2 text-sm', className)}
       {...props}
     >
       {children}
@@ -63,7 +63,7 @@ export function FilterListItemIcon({
     <div>
       <div
         className={cn(
-          'flex size-8 items-center justify-center rounded-full bg-muted',
+          'flex size-8 items-center justify-center rounded-full bg-primary-foreground',
           className
         )}
         {...props}
@@ -108,7 +108,7 @@ export function FilterListItemActionButton({
             <Button
               size={size}
               variant={variant}
-              className={cn(className)}
+              className={cn('size-6', className)}
               {...props}
             >
               {children}

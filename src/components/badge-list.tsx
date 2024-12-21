@@ -47,7 +47,7 @@ export function BadgeListItem({
     <li>
       <Badge
         variant="outline"
-        className={cn('gap-2 pl-1.5 pr-0.5 font-normal', {
+        className={cn('gap-2 pl-2 pr-0.5 font-normal dark:border-primary/10', {
           className,
         })}
         {...props}

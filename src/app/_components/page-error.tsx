@@ -7,7 +7,7 @@ export function PageError(
 ) {
   return (
     <div
-      className="flex h-screen w-full flex-col items-center justify-center rounded-md p-4 text-center text-gray-600 dark:text-gray-300"
+      className="flex h-screen w-full flex-col items-center justify-center rounded-lg p-4 text-center text-gray-600 dark:text-gray-300"
       {...props}
     >
       <h1 className="mb-6 font-serif text-xl font-medium text-black dark:text-white md:text-2xl">

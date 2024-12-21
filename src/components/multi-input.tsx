@@ -2,6 +2,8 @@
 
 import { BadgeList, BadgeListItem } from './badge-list'
 import { Input } from './ui/input'
+import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
 
 interface MultiInputProps
@@ -11,12 +13,16 @@ interface MultiInputProps
 }
 
 export function MultiInput({
-  selectedOptions = [],
+  className,
   type = 'text',
-  placeholder = 'Type and press Enter or add a comma...',
+  selectedOptions = [],
   ...props
 }: MultiInputProps) {
+  const t = useTranslations('MultiInput')
+
   const [value, setValue] = useState('')
+
+  const placeholder = props.placeholder || t('placeholder')
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value)
@@ -55,6 +61,7 @@ export function MultiInput({
     <>
       <Input
         {...props}
+        className={cn('pr-12', className)}
         placeholder={placeholder}
         type={type}
         value={value}

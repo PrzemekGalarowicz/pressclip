@@ -237,7 +237,7 @@ h6,
 .cl-alert,
 .cl-phoneInputBox,
 .cl-userButtonPopoverCard {
-  @apply rounded-md border border-input bg-background;
+  @apply rounded-lg border border-input bg-background;
 }
 
 .cl-headerTitle,
@@ -291,7 +291,7 @@ p[data-localization-key='userProfile.profilePage.successMessage'] {
 .cl-formFieldInput[type='text'],
 .cl-formFieldInput[type='email'],
 .cl-formFieldInput[type='password'] {
-  @apply flex h-11 max-h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-foreground !shadow-none ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  @apply flex h-11 max-h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground !shadow-none ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
 }
 
 .cl-footerActionLink {
@@ -307,7 +307,7 @@ p[data-localization-key='userProfile.profilePage.successMessage'] {
 }
 
 .cl-selectSearchInput__countryCode {
-  @apply flex h-10 w-full rounded-md border border-b border-input bg-background text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  @apply flex h-10 w-full rounded-lg border border-b border-input bg-background text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
 }
 
 .cl-selectOptionsContainer__countryCode {
@@ -347,11 +347,11 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 }
 
 .cl-card {
-  @apply rounded-md shadow-md;
+  @apply rounded-lg shadow-md;
 }
 
 .cl-userButtonPopoverCard {
-  @apply rounded-md;
+  @apply rounded-lg;
 }
 
 .cl-userButtonPopoverFooter a {
@@ -386,7 +386,7 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 }
 
 .cl-cardBox {
-  @apply rounded-md shadow-sm;
+  @apply rounded-lg shadow-sm;
 }
 
 .cl-socialButtonsBlockButton {
@@ -403,11 +403,11 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 }
 
 .cl-navbar {
-  @apply rounded-md border-y border-l bg-gradient-to-t from-background to-background;
+  @apply rounded-lg border-y border-l bg-gradient-to-t from-background to-background;
 }
 
 .cl-scrollBox {
-  @apply rounded-md rounded-l-none border border-input bg-gradient-to-t from-background to-background;
+  @apply rounded-lg rounded-l-none border border-input bg-gradient-to-t from-background to-background;
 }
 
 h1[data-localization-key='userProfile.navbar.title'] {
@@ -444,7 +444,7 @@ h1[data-localization-key='userProfile.navbar.title'] {
 }
 
 .cl-userButtonPopoverMain {
-  @apply rounded-md border-input bg-background;
+  @apply rounded-lg border-input bg-background;
 }
 
 .cl-userButtonPopoverCard {
@@ -486,7 +486,7 @@ h1[data-localization-key='userProfile.navbar.title'] {
 
 .cl-userButtonPopoverCustomItemButton,
 .cl-userButtonPopoverActionButton {
-  @apply mx-1 gap-2 rounded-md !border-0 px-3 py-2.5 font-normal text-primary transition-colors duration-300 hover:text-primary;
+  @apply mx-1 gap-2 rounded-lg !border-0 px-3 py-2.5 font-normal text-primary transition-colors duration-300 hover:text-primary;
 }
 
 .cl-userPreviewMainIdentifier {

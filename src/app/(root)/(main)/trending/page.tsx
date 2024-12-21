@@ -1,4 +1,4 @@
-import { ExternalLink } from 'lucide-react'
+// import { ExternalLink } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 
@@ -12,9 +12,9 @@ import {
   TeaserListItem,
   TeaserTitle,
 } from '../_components/teaser'
-import { Breaking, BreakingLink, BreakingTitle } from './_components/breaking'
+// import { Breaking, BreakingLink, BreakingTitle } from './_components/breaking'
 import { Categories } from './_components/categories'
-import PageHeader from './_components/page-header'
+// import PageHeader from './_components/page-header'
 import { Stocks } from './_components/stocks'
 import {
   OptionMenu,
@@ -28,6 +28,7 @@ import {
 } from '@/components/option-menu'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 
 export async function generateMetadata() {
   const t = await getTranslations('Global')
@@ -44,23 +45,28 @@ export default async function TrendingPage() {
 
   return (
     <>
-      {/* <Stocks className="relative mt-2 w-full pb-2 md:border-b" /> */}
+      <div className="flex items-center justify-between">
+        <div>
+          <SidebarTrigger />
+        </div>
+        <Stocks className="relative max-w-6xl py-3 md:border-b" />
+      </div>
 
-      <PageHeader />
+      {/* <PageHeader /> */}
 
-      <div className="relative mb-4 mt-2 w-full">
+      <div className="relative my-4 w-full">
         <Categories />
       </div>
 
-      <Breaking className="mb-3 mt-2">
+      {/* <Breaking className="mb-3 mt-2">
         <BreakingTitle>{t('breaking')}</BreakingTitle>
         <BreakingLink href="#">
           Iran Secretly Warns U.S. Allies: Don’t Help Israel, or You’re Next
         </BreakingLink>
-      </Breaking>
+      </Breaking> */}
 
       <div className="grid grid-cols-12 md:gap-x-8">
-        <section className="order-2 col-span-12 lg:col-span-4 xl:order-1 xl:col-span-3">
+        <section className="order-2 col-span-12 lg:col-span-4 xl:order-2 xl:col-span-3">
           <h2 className="mb-4 text-base uppercase tracking-wider">
             {t('latest')}
           </h2>
@@ -113,7 +119,7 @@ export default async function TrendingPage() {
           <Separator className="my-6 lg:hidden" />
         </section>
 
-        <section className="order-1 col-span-12 lg:col-span-8 xl:order-2 xl:col-span-6">
+        <section className="order-1 col-span-12 lg:col-span-8 xl:order-1 xl:col-span-6">
           <h2 className="mb-4 text-base uppercase tracking-wider">
             {t('recommended')}
           </h2>
@@ -272,13 +278,13 @@ export default async function TrendingPage() {
         </section>
       </div>
 
-      <Separator className="my-8 lg:my-10" />
+      {/* <Separator className="my-8 lg:my-10" />
 
       <section className="h-96 rounded-lg bg-[#f8f5ec] p-8">
         <h2 className="mb-4 text-base uppercase tracking-wider">
           This day in history
         </h2>
-      </section>
+      </section> */}
 
       <Separator className="my-8 lg:my-10" />
 
@@ -432,7 +438,7 @@ export default async function TrendingPage() {
       <Separator className="my-8 lg:my-10" />
 
       <section className="grid grid-cols-12 gap-6 lg:gap-10">
-        <div className="order-2 col-span-12 lg:order-1 lg:col-span-8 xl:col-span-9">
+        <div className="order-2 col-span-12 lg:order-1 lg:col-span-8">
           <h2 className="mb-4 text-base uppercase tracking-wider">
             {t('news')}
           </h2>
@@ -491,7 +497,7 @@ export default async function TrendingPage() {
           </div>
         </div>
 
-        <div className="order-1 col-span-12 lg:order-2 lg:col-span-4 xl:col-span-3">
+        {/* <div className="order-1 col-span-12 lg:order-2 lg:col-span-4 xl:col-span-3">
           <div className="sticky top-14 rounded-lg bg-secondary p-4">
             <h2 className="mb-4 text-base uppercase tracking-wider">
               {t('podcast')}
@@ -526,7 +532,7 @@ export default async function TrendingPage() {
               </Button>
             </div>
           </div>
-        </div>
+        </div> */}
       </section>
     </>
   )

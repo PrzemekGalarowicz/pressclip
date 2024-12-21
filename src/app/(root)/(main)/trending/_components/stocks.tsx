@@ -129,7 +129,7 @@ const stocks = [
 
 export const Stocks = ({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <ScrollArea className={cn('w-full whitespace-nowrap', className)}>
+    <ScrollArea className={cn('whitespace-nowrap', className)}>
       <div className="flex w-max">
         {stocks.map(
           ({ companyName, symbol, latestPrice, changePercent }, index) => {

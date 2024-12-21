@@ -405,7 +405,7 @@ export function SearchNewsForm({
               <FormControl>
                 <MultiInput
                   className={cn(
-                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
+                    'rounded-lg border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
                     fieldState.error && 'border-destructive'
                   )}
                   type="search"
@@ -479,7 +479,7 @@ export function SearchSocialMediaForm({
               <FormControl>
                 <Input
                   className={cn(
-                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
+                    'rounded-lg border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
                     fieldState.error && 'border-destructive'
                   )}
                   placeholder={t('searchInSocialMediaPlaceholder')}
@@ -550,7 +550,7 @@ export function SearchInternetForm({
               <FormControl>
                 <Input
                   className={cn(
-                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
+                    'rounded-lg border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
                     fieldState.error && 'border-destructive'
                   )}
                   placeholder={t('searchInTheInternetPlaceholder')}

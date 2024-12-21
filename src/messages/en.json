@@ -14,6 +14,7 @@
       "pricingTitle": "Pricing",
       "contactTitle": "Contact",
       "supportTitle": "Support",
+      "trashTitle": "Trash",
       "clippedTitle": "Clipped",
       "notFoundPageTitle": "404 / Page not found"
     },
@@ -45,7 +46,9 @@
     "open": "Open",
     "rename": "Rename",
     "share": "Share",
-    "delete": "Delete"
+    "delete": "Delete",
+    "next": "Next",
+    "trash": "Trash"
   },
   "Categories": {
     "all": "All",
@@ -76,11 +79,8 @@
     "delete": "Delete",
     "cancel": "Cancel"
   },
-  "Chat": {
-    "label": "Ask a follow-up question",
-    "placeholder": "Need more details? Ask a follow-up question...",
-    "send": "Send",
-    "loading": "Waiting for a response from chat... Please wait."
+  "MultiInput": {
+    "placeholder": "Type and press Enter or add a comma..."
   },
   "CookieDialog": {
     "title": "Cookies Settings",
@@ -244,20 +244,20 @@
     "ukrainian": "Ukrainian"
   },
   "AppSidebar": {
+    "close": "Close",
+    "open": "Open",
     "search": "Search",
-    "trending": "Trending",
     "bookmarks": "Bookmarks",
     "searches": "Searches",
     "schedule": "Schedule",
-    "workspaces": "Workspaces",
-    "add": "Add new subject",
+    "trash": "Trash",
+    "add": "Add new project",
     "more": "More",
-    "open": "Open",
-    "rename": "Rename",
+    "edit": "Edit",
     "share": "Share",
     "delete": "Delete",
     "toggle": "Toggle Menu",
-    "subjects": "Subjects"
+    "projects": "Projects"
   },
   "UserDropdown": {
     "subscription": "Subscription",
@@ -342,6 +342,10 @@
     "schedule": "Schedule",
     "loadMore": "Load more"
   },
+  "TrashPage": {
+    "trash": "Trash",
+    "loadMore": "Load more"
+  },
   "SearchPage": {
     "title": "What are you looking for today?",
     "description": "We have a wide range of <button>{advancedSearchOptions}</button> to help you find exactly what you're looking for.",
@@ -354,7 +358,7 @@
     "addATask": "Add a new task",
     "addAndScheduleATask": "Add and schedule a task",
     "search": "Search",
-    "addKeywordsPlaceholder": "Add keywords releated to the topic your're looking for...",
+    "addKeywordsPlaceholder": "Add keywords releated to the topic and press Enter or add a comma...",
     "searchInSocialMediaPlaceholder": "Search in social media...",
     "searchInTheInternetPlaceholder": "Search in the Internet...",
     "categories": "Categories",

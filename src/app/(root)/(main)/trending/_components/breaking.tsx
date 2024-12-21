@@ -24,7 +24,7 @@ const BreakingTitle = React.forwardRef<
   <h2
     ref={ref}
     className={cn(
-      'mb-1 mr-4 w-fit rounded-md bg-red-500 px-2 py-1 font-sans text-xs !font-medium uppercase text-white dark:bg-red-700 md:mb-0',
+      'mb-1 mr-4 w-fit rounded-lg bg-red-500 px-2 py-1 font-sans text-xs !font-medium uppercase text-white dark:bg-red-700 md:mb-0',
       className
     )}
     {...props}

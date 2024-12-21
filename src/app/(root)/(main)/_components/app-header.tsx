@@ -8,19 +8,30 @@ import * as React from 'react'
 
 import { useScroll } from '@/hooks/use-scroll'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonProps } from '@/components/ui/button'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
-export function BackButton() {
+export function BackButton({
+  className,
+  variant = 'ghost',
+  onClick,
+  ...props
+}: ButtonProps) {
   const t = useTranslations('Global')
 
   const router = useRouter()
 
   return (
     <Button
-      variant="ghost"
-      className="w-10 md:w-auto"
-      onClick={() => router.back()}
+      variant={variant}
+      className={cn('w-10 md:w-auto', className)}
+      onClick={(event) => {
+        router.back()
+        if (onClick) {
+          onClick(event)
+        }
+      }}
+      {...props}
     >
       <ArrowLeft className="size-4" />
       <span className="sr-only md:not-sr-only md:ml-2">{t('back')}</span>

@@ -7,15 +7,14 @@ import {
   CardMenuTrigger,
 } from './card'
 import { UserDropdown } from './user-dropdown'
-import { cn } from '@/lib/utils'
 import {
   Bookmark,
   Bot,
   CalendarSearch,
   ChevronRight,
+  Circle,
   Flag,
   FlaskConical,
-  Folder,
   FolderOpen,
   FolderSearch,
   MoreHorizontal,
@@ -23,12 +22,10 @@ import {
   Plus,
   Search,
   Trash,
-  TrendingUp,
   UserPlus,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import Link, { LinkProps } from 'next/link'
-import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 import { ThemeDropdown } from '@/app/_components/theme-dropdown'
 import { Logo } from '@/components/logo'
@@ -55,50 +52,22 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
 
-export function SidebarMenuLink(
-  props: {
-    className?: string
-    children: React.ReactNode
-    onClick?: () => void
-  } & LinkProps
-) {
-  const pathname = usePathname()
-  const isActive = pathname.includes(props.href as string)
-
-  return (
-    <Button
-      variant="ghost"
-      className={cn(
-        'mb-px h-12 w-full justify-start rounded-none px-5 transition-all duration-300 hover:rounded-r-lg hover:bg-gray-50 dark:hover:bg-[#1f1f1f] md:h-10',
-        props.className,
-        {
-          'relative bg-secondary text-black before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-black before:content-[""] dark:text-white dark:before:bg-white md:rounded-r-lg':
-            isActive,
-        }
-      )}
-      onClick={props.onClick}
-      asChild
-    >
-      <Link {...props}>{props.children}</Link>
-    </Button>
-  )
-}
-
 export function AppSidebar() {
   const t = useTranslations('AppSidebar')
 
   const mainMenuItems = [
-    { title: t('trending'), url: '/trending', icon: TrendingUp },
     { title: t('bookmarks'), url: '/bookmarks', icon: Bookmark },
     { title: t('searches'), url: '/searches', icon: FolderSearch },
     { title: t('schedule'), url: '/schedule', icon: CalendarSearch },
+    { title: t('trash'), url: '/trash', icon: Trash },
   ]
 
-  const feedsMenuItems = [
+  const projectsMenuItems = [
     {
       title: 'Science',
       url: '/feeds/science',
       icon: FlaskConical,
+      color: 'text-red-500',
       items: [
         {
           title: 'The New York Times',
@@ -116,6 +85,7 @@ export function AppSidebar() {
       title: 'US News',
       url: '/feeds/us-news',
       icon: Flag,
+      color: 'text-blue-500',
       items: [
         {
           title: 'The New York Times',
@@ -140,9 +110,38 @@ export function AppSidebar() {
       ],
     },
     {
+      title: 'Competition',
+      url: '/feeds/competition',
+      icon: Circle,
+      color: null,
+      items: [
+        {
+          title: 'The New York Times',
+          url: '/feeds/competition?source=nyt',
+          icon: null,
+        },
+        {
+          title: 'The Guardian',
+          url: '/feeds/us-news?source=the-guardian',
+          icon: null,
+        },
+        {
+          title: 'The Washington Post',
+          url: '/feeds/us-news?source=washington-post',
+          icon: null,
+        },
+        {
+          title: 'The Wall Street Journal',
+          url: '/feeds/us-news?source=wall-street-journal',
+          icon: null,
+        },
+      ],
+    },
+    {
       title: 'Tech',
       url: '/feeds/tech',
       icon: Bot,
+      color: 'text-green-500',
       items: [
         {
           title: 'TechCrunch',
@@ -154,23 +153,20 @@ export function AppSidebar() {
     },
   ]
 
-  const projects = [
-    { name: 'Project 1', url: '/projects/1', icon: Folder },
-    { name: 'Project 2', url: '/projects/2', icon: Folder },
-  ]
+  // const projects = [
+  //   { name: 'Project 1', url: '/projects/1', icon: Folder },
+  //   { name: 'Project 2', url: '/projects/2', icon: Folder },
+  // ]
 
   return (
     <Sidebar className="!border-0">
       <SidebarHeader>
         <Logo href="/search" className="m-2" />
-      </SidebarHeader>
 
-      <SidebarContent>
-        <div className="mx-4 mb-3 mt-4">
+        <div className="mx-2 mb-3 mt-4">
           <Button
             variant="secondary"
-            size="lg"
-            className="group/btn hidden w-fit px-6 md:flex"
+            className="group/btn flex w-fit rounded-full px-6"
             asChild
           >
             <Link href="/search" className="font-medium">
@@ -182,7 +178,9 @@ export function AppSidebar() {
             </Link>
           </Button>
         </div>
+      </SidebarHeader>
 
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -202,11 +200,11 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center justify-between">
-            {t('subjects')}
+            {t('projects')}
             <Button
               variant="ghost"
               size="icon"
-              className="size-5 rounded-md text-primary"
+              className="size-5 rounded-lg text-primary"
             >
               <Plus />
               <span className="sr-only">{t('add')}</span>
@@ -214,7 +212,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
 
           <SidebarMenu>
-            {feedsMenuItems.map((item) => (
+            {projectsMenuItems.map((item) => (
               <Collapsible key={item.title} asChild>
                 <SidebarMenuItem>
                   <SidebarMenuButton
@@ -223,14 +221,18 @@ export function AppSidebar() {
                     className="h-9"
                   >
                     <a href={item.url}>
-                      <item.icon />
+                      <item.icon
+                        className={
+                          item.color ? item.color : 'text-muted-foreground'
+                        }
+                      />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
 
                   <CardMenu>
                     <CardMenuTrigger asChild>
-                      <SidebarMenuAction className="mr-5 mt-0.5" showOnHover>
+                      <SidebarMenuAction className="mr-6 mt-0.5" showOnHover>
                         <MoreHorizontal />
                         <span className="sr-only">{t('more')}</span>
                       </SidebarMenuAction>
@@ -246,10 +248,10 @@ export function AppSidebar() {
                       </CardMenuItem>
                       <CardMenuItem
                         onClick={() => {
-                          console.log('rename')
+                          console.log('edit')
                         }}
                       >
-                        <Pen className="text-muted-foreground" /> {t('rename')}
+                        <Pen className="text-muted-foreground" /> {t('edit')}
                       </CardMenuItem>
                       <CardMenuItem
                         onClick={() => {
@@ -298,7 +300,7 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
 
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        {/* <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>{t('workspaces')}</SidebarGroupLabel>
 
           <SidebarMenu>
@@ -361,7 +363,7 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
       <SidebarFooter>

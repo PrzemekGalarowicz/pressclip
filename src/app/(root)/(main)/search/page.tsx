@@ -1,45 +1,15 @@
 'use client'
 
-import {
-  useDefaultCategories,
-  useDefaultCountries,
-  useDefaultLanguages,
-  useDefaultSources,
-} from './_hooks'
-import { FilterLabelType, FilterRecordType, FilterType } from './_type'
-import {
-  isDisabled,
-  onClearAction,
-  onExclude,
-  onInclude,
-  updateFilters,
-} from './_utils'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  CalendarCog,
-  ClipboardList,
-  Earth,
-  Globe,
-  Languages,
-  ListPlus,
-  Minus,
-  MonitorSmartphone,
-  Newspaper,
-  Plus,
-  Search as SearchIcon,
-} from 'lucide-react'
+import { ChevronDown, Minus, Plus, SearchIcon, Sparkles } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useTransition } from 'react'
 import * as React from 'react'
 import { CircleFlag } from 'react-circle-flags'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { useEscapeButton } from '@/hooks/use-escape-button'
-import { useIsClient } from '@/hooks/use-is-client'
-import { useOnClickOutside } from '@/hooks/use-on-click-outside'
-
+import { AppHeader } from '../_components/app-header'
 import {
   FilterList,
   FilterListItem,
@@ -47,11 +17,21 @@ import {
   FilterListItemActionButton,
   FilterListItemIcon,
   FilterListItemLabel,
-} from './_components/filter-list'
-import { FilterNav, FilterNavItem } from './_components/filter-nav'
+} from '../_search/_components/filter-list'
+import { AccentButton } from '@/components/accent-button'
 import { BadgeList, BadgeListItem } from '@/components/badge-list'
 import { MultiInput } from '@/components/multi-input'
-import { Button } from '@/components/ui/button'
+import { MultiSelect } from '@/components/multi-select'
+import { Button, ButtonProps } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Form,
   FormControl,
@@ -60,6 +40,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 import {
   Tooltip,
@@ -67,6 +52,144 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+
+import {
+  useDefaultCategories,
+  useDefaultCountries,
+  useDefaultLanguages,
+  useDefaultSources,
+} from '../_search/_hooks'
+import { FilterLabelType, FilterRecordType, FilterType } from '../_search/_type'
+import { isDisabled } from '../_search/_utils'
+
+export function FilterPopover({
+  children,
+  title,
+  filterType,
+  filters,
+  onSearch,
+  onRemove,
+  onExclude,
+  onInclude,
+  ...props
+}: ButtonProps & {
+  title: string
+  filterType: FilterLabelType
+  filters: FilterType[]
+  onSearch?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onRemove: (filter: FilterType) => void
+  onExclude: (filter: FilterType) => void
+  onInclude: (filter: FilterType) => void
+}) {
+  const t = useTranslations('SearchPage')
+
+  const [filteredFilters, setFilteredFilters] = React.useState(filters)
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button {...props}>
+          {children} <ChevronDown />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-56 p-1.5">
+        <h4 className="mx-2 mb-1.5 text-sm font-medium">{title}</h4>
+
+        <div className="relative mb-1">
+          <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="h-9 pl-10"
+            placeholder={t('search')}
+            onChange={(event) => {
+              const value = event.target.value
+
+              if (value.length === 0) {
+                setFilteredFilters(filters)
+              } else {
+                setFilteredFilters(
+                  filters.filter((filter) =>
+                    filter.label.toLowerCase().includes(value.toLowerCase())
+                  )
+                )
+              }
+
+              if (onSearch) {
+                onSearch(event)
+              }
+            }}
+          />
+        </div>
+
+        <BadgeList>
+          {filters
+            .sort((a, b) => a.label.length - b.label.length)
+            .filter((filter) => filter.include || filter.exclude)
+            .map((filter) => (
+              <BadgeListItem
+                key={filter.label}
+                include={filter.include}
+                exclude={filter.exclude}
+                onRemove={() => onRemove(filter)}
+              >
+                {filter.label}
+              </BadgeListItem>
+            ))}
+        </BadgeList>
+
+        <div className="max-h-72 overflow-y-auto">
+          <FilterList>
+            {filteredFilters.map((filter) => (
+              <React.Fragment key={filter.label}>
+                <FilterListItem>
+                  <FilterListItemLabel>
+                    {filterType !== 'sources' && (
+                      <FilterListItemIcon>
+                        {filterType === 'categories' ? (
+                          <filter.icon className="size-4 text-muted-foreground" />
+                        ) : (
+                          <CircleFlag
+                            countryCode={filter.icon as string}
+                            className="size-6"
+                          />
+                        )}
+                      </FilterListItemIcon>
+                    )}
+
+                    {filter.label}
+                  </FilterListItemLabel>
+
+                  <FilterListItemAction>
+                    <FilterListItemActionButton
+                      tooltip={t('exclude')}
+                      disabled={isDisabled(filter, 'exclude')}
+                      onClick={() => onExclude(filter)}
+                    >
+                      <>
+                        <Minus className="text-red-500" />
+                        <span className="sr-only">{t('exclude')}</span>
+                      </>
+                    </FilterListItemActionButton>
+                    <FilterListItemActionButton
+                      tooltip={t('include')}
+                      disabled={isDisabled(filter, 'include')}
+                      onClick={() => onInclude(filter)}
+                    >
+                      <>
+                        <Plus className="text-green-500" />
+                        <span className="sr-only">{t('include')}</span>
+                      </>
+                    </FilterListItemActionButton>
+                  </FilterListItemAction>
+                </FilterListItem>
+              </React.Fragment>
+            ))}
+          </FilterList>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 export function SearchLayout({
   className,
@@ -77,7 +200,7 @@ export function SearchLayout({
   return (
     <div
       className={cn(
-        'flex h-screen flex-col items-center justify-center',
+        'flex h-[calc(100vh-14rem)] flex-col items-center justify-center',
         className
       )}
       {...props}
@@ -119,136 +242,183 @@ export function SearchFormLayout({
 }: React.ComponentPropsWithRef<'div'>) {
   const t = useTranslations('SearchPage')
 
-  const [activeForm, setActiveForm] = React.useState<
-    'news' | 'social_media' | 'internet'
-  >('news')
+  const [sortBy, setSortBy] = React.useState<
+    'published_desc' | 'published_asc' | 'relevance'
+  >('published_desc')
+
+  const categories: FilterType[] = useDefaultCategories()
+  const sources: FilterType[] = useDefaultSources()
+  const countries: FilterType[] = useDefaultCountries()
+  const languages: FilterType[] = useDefaultLanguages()
+
+  const [filters, setFilters] = React.useState<FilterRecordType>({
+    categories,
+    countries,
+    sources,
+    languages,
+  })
+
+  const updateFilters = (
+    filter: FilterType,
+    filterName: FilterLabelType,
+    includeVal: boolean | null,
+    excludeVal: boolean | null
+  ) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterName]: prev[filterName].map((f) => {
+        const isMatch = f.label === filter.label
+        return {
+          ...f,
+          include: isMatch ? includeVal : f.include,
+          exclude: isMatch ? excludeVal : f.exclude,
+        }
+      }),
+    }))
+  }
+
+  const onInclude = (filter: FilterType, filterName: FilterLabelType) => {
+    updateFilters(filter, filterName, true, false)
+  }
+
+  const onExclude = (filter: FilterType, filterName: FilterLabelType) => {
+    updateFilters(filter, filterName, false, true)
+  }
+
+  const onRemove = (filter: FilterType, filterName: FilterLabelType) => {
+    updateFilters(filter, filterName, null, null)
+  }
 
   return (
     <div
-      className={cn('flex flex-col gap-2 rounded-3xl bg-muted p-2', className)}
+      className={cn('flex flex-col gap-2 rounded-3xl bg-muted', className)}
       {...props}
     >
-      {activeForm === 'news' && <SearchNewsForm />}
-      {activeForm === 'social_media' && <SearchSocialMediaForm />}
-      {activeForm === 'internet' && <SearchInternetForm />}
+      <SearchNewsForm className="px-2 pt-2" />
 
-      <nav className="flex gap-1">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setActiveForm('news')}
-              >
-                <Newspaper
-                  strokeWidth={2}
-                  className={cn(
-                    activeForm !== 'news' && 'text-muted-foreground'
-                  )}
-                />
-                <span className="sr-only">
-                  {t('searchInNewspapersMagazinesAndBlogs')}
-                </span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {t('searchInNewspapersMagazinesAndBlogs')}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      <Separator className="dark:bg-primary/10" />
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setActiveForm('social_media')}
-              >
-                <MonitorSmartphone
-                  strokeWidth={2}
-                  className={cn(
-                    activeForm !== 'social_media' && 'text-muted-foreground'
-                  )}
-                />
-                <span className="sr-only">{t('searchInSocialMedia')}</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{t('searchInSocialMedia')}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      <div className="flex items-center justify-around gap-1">
+        <FilterPopover
+          className="text-muted-foreground"
+          size="sm"
+          variant="ghost"
+          title={t('categories')}
+          filterType="categories"
+          filters={filters.categories}
+          onRemove={(filter) => onRemove(filter, 'categories')}
+          onExclude={(filter) => onExclude(filter, 'categories')}
+          onInclude={(filter) => onInclude(filter, 'categories')}
+        >
+          {filters.categories.filter(
+            (filter) => filter.include || filter.exclude
+          ).length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {filters.categories
+                .filter((filter) => filter.include || filter.exclude)
+                .map((filter) => (
+                  <span
+                    key={filter.label}
+                    className="block w-fit truncate text-muted-foreground"
+                  >
+                    {filter.label}
+                  </span>
+                ))}
+            </div>
+          ) : (
+            <span className="text-muted-foreground">Categories</span>
+          )}
+        </FilterPopover>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setActiveForm('internet')}
-              >
-                <Globe
-                  strokeWidth={2}
-                  className={cn(
-                    activeForm !== 'internet' && 'text-muted-foreground'
-                  )}
-                />
-                <span className="sr-only">{t('searchInTheInternet')}</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{t('searchInTheInternet')}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </nav>
-    </div>
-  )
-}
+        <Separator orientation="vertical" className="h-8 dark:bg-primary/10" />
 
-export function SearchFormTriggers({ submitting }: { submitting: boolean }) {
-  const t = useTranslations('SearchPage')
-  return (
-    <>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button type="button" variant="secondary" size="icon">
-              <ListPlus strokeWidth={2} />
-              <span className="sr-only">{t('addATask')}</span>
+        <FilterPopover
+          className="text-muted-foreground"
+          size="sm"
+          variant="ghost"
+          title={t('sources')}
+          filterType="sources"
+          filters={filters.sources}
+          onRemove={(filter) => onRemove(filter, 'sources')}
+          onExclude={(filter) => onExclude(filter, 'sources')}
+          onInclude={(filter) => onInclude(filter, 'sources')}
+        >
+          Sources
+        </FilterPopover>
+
+        <Separator orientation="vertical" className="h-8 dark:bg-primary/10" />
+
+        <FilterPopover
+          className="text-muted-foreground"
+          size="sm"
+          variant="ghost"
+          title={t('countries')}
+          filterType="countries"
+          filters={filters.countries}
+          onRemove={(filter) => onRemove(filter, 'countries')}
+          onExclude={(filter) => onExclude(filter, 'countries')}
+          onInclude={(filter) => onInclude(filter, 'countries')}
+        >
+          Countries
+        </FilterPopover>
+
+        <Separator orientation="vertical" className="h-8 dark:bg-primary/10" />
+
+        <FilterPopover
+          className="text-muted-foreground"
+          size="sm"
+          variant="ghost"
+          title={t('languages')}
+          filterType="languages"
+          filters={filters.languages}
+          onRemove={(filter) => onRemove(filter, 'languages')}
+          onExclude={(filter) => onExclude(filter, 'languages')}
+          onInclude={(filter) => onInclude(filter, 'languages')}
+        >
+          Languages
+        </FilterPopover>
+
+        <Separator orientation="vertical" className="h-8 dark:bg-primary/10" />
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="ghost" className="text-muted-foreground">
+              Sort by <ChevronDown />
             </Button>
-          </TooltipTrigger>
-          <TooltipContent>{t('addATask')}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button type="button" variant="secondary" size="icon">
-              <CalendarCog strokeWidth={2} />
-              <span className="sr-only">{t('addAndScheduleATask')}</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>{t('addAndScheduleATask')}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              type="submit"
-              size="icon"
-              disabled={submitting}
-              className="shadow-md"
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>Sort options</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioGroup
+              value={sortBy}
+              onValueChange={(value) =>
+                setSortBy(
+                  value as 'relevance' | 'published_desc' | 'published_asc'
+                )
+              }
             >
-              <SearchIcon strokeWidth={3} />
-              <span className="sr-only">{t('search')}</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>{t('search')}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </>
+              <DropdownMenuRadioItem value="relevance">
+                Relevance
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="published_desc">
+                Published (desc)
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="published_asc">
+                Published (asc)
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <Separator className="dark:bg-primary/10" />
+
+      <div className="mx-2 mb-2 flex justify-end">
+        <Button className="rounded-full">
+          <SearchIcon /> Search
+        </Button>
+      </div>
+    </div>
   )
 }
 
@@ -273,7 +443,7 @@ export function SearchNewsForm({
 }: React.ComponentPropsWithRef<'form'>) {
   const t = useTranslations('SearchPage')
 
-  const [submitting, startTransition] = useTransition()
+  const [_, startTransition] = React.useTransition()
 
   const newsFormSchema = useNewsFormSchema()
   const form = useForm<NewsFormData>({
@@ -306,7 +476,7 @@ export function SearchNewsForm({
               <FormControl>
                 <MultiInput
                   className={cn(
-                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
+                    'rounded-lg border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
                     fieldState.error && 'border-destructive'
                   )}
                   type="search"
@@ -321,373 +491,36 @@ export function SearchNewsForm({
             </FormItem>
           )}
         />
-
-        <SearchFormTriggers submitting={submitting} />
-      </form>
-    </Form>
-  )
-}
-
-function useSocialMediaFormSchema() {
-  const t = useTranslations('SearchPage')
-
-  const schema = React.useMemo(() => {
-    return z.object({
-      query: z.string().min(1, { message: t('atLeastOneCharacterIsRequired') }),
-    })
-  }, [t])
-
-  return schema
-}
-type SocialMediaFormData = z.infer<ReturnType<typeof useSocialMediaFormSchema>>
-
-export function SearchSocialMediaForm({
-  className,
-  ...props
-}: React.ComponentPropsWithRef<'form'>) {
-  const t = useTranslations('SearchPage')
-
-  const [submitting, startTransition] = useTransition()
-
-  const socialMediaFormSchema = useSocialMediaFormSchema()
-  const form = useForm<SocialMediaFormData>({
-    resolver: zodResolver(socialMediaFormSchema),
-    defaultValues: {
-      query: '',
-    },
-  })
-
-  const onSubmit = (data: SocialMediaFormData) => {
-    startTransition(async () => {
-      console.log('onSubmit', data)
-      form.reset()
-    })
-  }
-
-  return (
-    <Form {...form}>
-      <form
-        className={cn('flex flex-1 items-baseline gap-2', className)}
-        noValidate
-        onSubmit={form.handleSubmit(onSubmit)}
-        {...props}
-      >
-        <FormField
-          control={form.control}
-          name="query"
-          render={({ field, fieldState }) => (
-            <FormItem className="flex-1 px-1">
-              <FormControl>
-                <Input
-                  className={cn(
-                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
-                    fieldState.error && 'border-destructive'
-                  )}
-                  placeholder={t('searchInSocialMediaPlaceholder')}
-                  aria-invalid={fieldState.error ? 'true' : 'false'}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="px-3" />
-            </FormItem>
-          )}
-        />
-
-        <SearchFormTriggers submitting={submitting} />
-      </form>
-    </Form>
-  )
-}
-
-function useInternetFormSchema() {
-  const t = useTranslations('SearchPage')
-
-  const schema = React.useMemo(() => {
-    return z.object({
-      query: z.string().min(1, { message: t('atLeastOneCharacterIsRequired') }),
-    })
-  }, [t])
-
-  return schema
-}
-type InternetFormData = z.infer<ReturnType<typeof useInternetFormSchema>>
-
-export function SearchInternetForm({
-  className,
-  ...props
-}: React.ComponentPropsWithRef<'form'>) {
-  const t = useTranslations('SearchPage')
-
-  const [submitting, startTransition] = useTransition()
-
-  const internetFormSchema = useInternetFormSchema()
-  const form = useForm<InternetFormData>({
-    resolver: zodResolver(internetFormSchema),
-    defaultValues: {
-      query: '',
-    },
-  })
-
-  const onSubmit = (data: InternetFormData) => {
-    startTransition(async () => {
-      console.log('onSubmit', data)
-      form.reset()
-    })
-  }
-
-  return (
-    <Form {...form}>
-      <form
-        className={cn('flex flex-1 items-baseline gap-2', className)}
-        noValidate
-        onSubmit={form.handleSubmit(onSubmit)}
-        {...props}
-      >
-        <FormField
-          control={form.control}
-          name="query"
-          render={({ field, fieldState }) => (
-            <FormItem className="flex-1 px-1">
-              <FormControl>
-                <Input
-                  className={cn(
-                    'rounded-xl border-transparent bg-transparent placeholder:text-base placeholder:text-muted-foreground/75',
-                    fieldState.error && 'border-destructive'
-                  )}
-                  placeholder={t('searchInTheInternetPlaceholder')}
-                  aria-invalid={fieldState.error ? 'true' : 'false'}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="px-3" />
-            </FormItem>
-          )}
-        />
-
-        <SearchFormTriggers submitting={submitting} />
       </form>
     </Form>
   )
 }
 
 export default function SearchPage() {
-  const t = useTranslations('SearchPage')
+  const g = useTranslations('Global')
 
-  const isClient = useIsClient()
-
-  const defaultCategories: FilterType[] = useDefaultCategories()
-  const defaultSources: FilterType[] = useDefaultSources()
-  const defaultCountries: FilterType[] = useDefaultCountries()
-  const defaultLanguages: FilterType[] = useDefaultLanguages()
-  const DEFAULT_FILTERS: FilterRecordType = {
-    categories: defaultCategories,
-    sources: defaultSources,
-    countries: defaultCountries,
-    languages: defaultLanguages,
-  }
-
-  const [filters, setFilters] = React.useState<FilterRecordType>(() => {
-    if (!isClient) return DEFAULT_FILTERS
-    const data = localStorage.getItem('PRESSCLIP_FILTERS')
-    return data ? JSON.parse(data) : DEFAULT_FILTERS
-  })
-  const [filteredFilters, setFilteredFilters] =
-    React.useState<FilterRecordType>(() => {
-      if (!isClient) return DEFAULT_FILTERS
-      const data = localStorage.getItem('PRESSCLIP_FILTERED_FILTERS')
-      return data ? JSON.parse(data) : DEFAULT_FILTERS
-    })
-
-  const [activeFilter, setActiveFilter] = React.useState<
-    FilterLabelType | undefined
-  >(() => {
-    if (!isClient) return undefined
-    const data = localStorage.getItem('PRESSCLIP_ACTIVE_FILTER')
-    return data ? JSON.parse(data) : undefined
-  })
-
-  const onSetFilters = (filterName: FilterLabelType) => {
-    setFilters((prev) => updateFilters(prev, filterName))
-    localStorage.setItem('PRESSCLIP_FILTERS', JSON.stringify(filters))
-
-    setFilteredFilters((prev) => updateFilters(prev, filterName))
-    localStorage.setItem(
-      'PRESSCLIP_FILTERED_FILTERS',
-      JSON.stringify(filteredFilters)
-    )
-
-    setActiveFilter(filterName)
-    localStorage.setItem('PRESSCLIP_ACTIVE_FILTER', JSON.stringify(filterName))
-  }
-
-  const ref = React.useRef<HTMLDivElement>(null)
-  useOnClickOutside(ref, () => setActiveFilter(undefined))
-
-  useEscapeButton(() => setActiveFilter(undefined))
+  const sources = useDefaultSources()
+  const [selectedSources, setSelectedSources] = React.useState<string[]>([])
 
   return (
-    <SearchLayout>
-      <div className="mb-0.5 w-full max-w-2xl transition-all duration-300">
-        <SearchFormLayout />
-      </div>
+    <>
+      <AppHeader>
+        <AccentButton href="/" icon={<Sparkles />}>
+          {g('upgrade')}
+        </AccentButton>
+      </AppHeader>
 
-      <div ref={ref}>
-        <FilterNav>
-          <FilterNavItem
-            active={activeFilter === 'categories'}
-            onClick={() => onSetFilters('categories')}
-          >
-            <ClipboardList className="text-blue-600" />
-            {t('categories')}
-          </FilterNavItem>
-          <FilterNavItem
-            active={activeFilter === 'sources'}
-            onClick={() => onSetFilters('sources')}
-          >
-            <Newspaper className="text-cyan-600" />
-            {t('sources')}
-          </FilterNavItem>
-          <FilterNavItem
-            active={activeFilter === 'countries'}
-            onClick={() => onSetFilters('countries')}
-          >
-            <Earth className="text-sky-600" />
-            {t('countries')}
-          </FilterNavItem>
-          <FilterNavItem
-            active={activeFilter === 'languages'}
-            onClick={() => onSetFilters('languages')}
-          >
-            <Languages className="text-lime-600" />
-            {t('languages')}
-          </FilterNavItem>
-        </FilterNav>
-
-        {activeFilter && (
-          <div className="mt-2 w-full max-w-lg rounded-2xl border bg-background p-4">
-            <div className="relative mb-2">
-              <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                className="rounded-2xl border-none bg-muted pl-10"
-                placeholder={t('search')}
-                onChange={(e) => {
-                  setFilteredFilters((prev) => ({
-                    ...prev,
-                    [activeFilter]: filters[activeFilter].filter((filter) =>
-                      filter.label
-                        .toLocaleUpperCase()
-                        .includes(e.target.value.toLocaleUpperCase())
-                    ),
-                  }))
-                }}
-              />
-            </div>
-
-            <BadgeList>
-              {filters[activeFilter].map((filter) =>
-                filter.include || filter.exclude ? (
-                  <BadgeListItem
-                    key={filter.label}
-                    include={filter.include}
-                    exclude={filter.exclude}
-                    onRemove={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        [activeFilter]: onClearAction(prev[activeFilter]),
-                      }))
-                      setFilteredFilters((prev) => ({
-                        ...prev,
-                        [activeFilter]: onClearAction(prev[activeFilter]),
-                      }))
-                    }}
-                  >
-                    {filter.label}
-                  </BadgeListItem>
-                ) : null
-              )}
-            </BadgeList>
-
-            <div className="max-h-[260px] overflow-y-auto">
-              <FilterList>
-                {filteredFilters[activeFilter].map((filter, index) => (
-                  <React.Fragment key={filter.label}>
-                    <FilterListItem>
-                      <FilterListItemLabel>
-                        {activeFilter !== 'sources' && (
-                          <FilterListItemIcon>
-                            {activeFilter === 'categories' ? (
-                              <filter.icon className="size-4 text-muted-foreground" />
-                            ) : (
-                              <CircleFlag countryCode={filter.icon as string} />
-                            )}
-                          </FilterListItemIcon>
-                        )}
-
-                        {filter.label}
-                      </FilterListItemLabel>
-
-                      <FilterListItemAction>
-                        <FilterListItemActionButton
-                          tooltip={t('exclude')}
-                          disabled={isDisabled(filter, 'exclude')}
-                          onClick={() => {
-                            setFilters((prev) => ({
-                              ...prev,
-                              [activeFilter]: onExclude(
-                                prev[activeFilter],
-                                filter
-                              ),
-                            }))
-                            setFilteredFilters((prev) => ({
-                              ...prev,
-                              [activeFilter]: onExclude(
-                                prev[activeFilter],
-                                filter
-                              ),
-                            }))
-                          }}
-                        >
-                          <>
-                            <Minus className="text-red-500" />
-                            <span className="sr-only">{t('exclude')}</span>
-                          </>
-                        </FilterListItemActionButton>
-                        <FilterListItemActionButton
-                          tooltip={t('include')}
-                          disabled={isDisabled(filter, 'include')}
-                          onClick={() => {
-                            setFilters((prev) => ({
-                              ...prev,
-                              [activeFilter]: onInclude(
-                                prev[activeFilter],
-                                filter
-                              ),
-                            }))
-                            setFilteredFilters((prev) => ({
-                              ...prev,
-                              [activeFilter]: onInclude(
-                                prev[activeFilter],
-                                filter
-                              ),
-                            }))
-                          }}
-                        >
-                          <>
-                            <Plus className="text-green-500" />
-                            <span className="sr-only">{t('include')}</span>
-                          </>
-                        </FilterListItemActionButton>
-                      </FilterListItemAction>
-                    </FilterListItem>
-
-                    {index < filters[activeFilter].length - 1 && <Separator />}
-                  </React.Fragment>
-                ))}
-              </FilterList>
-            </div>
-          </div>
-        )}
-      </div>
-    </SearchLayout>
+      <SearchLayout>
+        <div className="mb-0.5 w-full max-w-2xl transition-all duration-300">
+          <SearchFormLayout />
+          <MultiSelect
+            placeholder="Select categories"
+            options={sources}
+            selectedOptions={selectedSources}
+            onCheckedChange={setSelectedSources}
+          />
+        </div>
+      </SearchLayout>
+    </>
   )
 }

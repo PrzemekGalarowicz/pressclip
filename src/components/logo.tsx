@@ -17,7 +17,7 @@ export function Logo({
       {...props}
     >
       <div className="flex items-center">
-        <span className="mr-3 flex h-10 w-10 items-center justify-center rounded-md bg-primary font-serif text-2xl font-bold text-white dark:text-black">
+        <span className="mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary font-serif text-2xl font-bold text-white dark:text-black">
           P
         </span>
         <span className="font-serif text-xl font-bold tracking-[1px] text-primary">
