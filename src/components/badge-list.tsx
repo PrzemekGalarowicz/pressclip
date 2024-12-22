@@ -47,9 +47,12 @@ export function BadgeListItem({
     <li>
       <Badge
         variant="outline"
-        className={cn('gap-2 pl-2 pr-0.5 font-normal dark:border-primary/10', {
-          className,
-        })}
+        className={cn(
+          'gap-2 py-1 pl-3 pr-1 font-normal dark:border-primary/10',
+          {
+            className,
+          }
+        )}
         {...props}
       >
         <span className="flex items-center gap-1 text-muted-foreground">

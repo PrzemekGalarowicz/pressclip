@@ -16,7 +16,7 @@ interface MultiSelectProps extends ButtonProps {
   ref?: React.Ref<HTMLButtonElement>
   className?: string
   placeholder?: string
-  options: { label: string; icon: string; include: null; exclude: null }[]
+  options: { label: string; icon: string; selected: boolean }[]
   selectedOptions?: string[]
   onCheckedChange: (option: string[]) => void
 }

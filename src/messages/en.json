@@ -257,7 +257,8 @@
     "share": "Share",
     "delete": "Delete",
     "toggle": "Toggle Menu",
-    "projects": "Projects"
+    "projects": "Projects",
+    "trending": "Trending"
   },
   "UserDropdown": {
     "subscription": "Subscription",
@@ -365,8 +366,10 @@
     "sources": "Sources",
     "countries": "Countries",
     "languages": "Languages",
-    "exclude": "Exclude",
-    "include": "Include",
+    "sortOptions": "Sort options",
+    "relevance": "Relevance",
+    "publishedDesc": "Published (desc)",
+    "publishedAsc": "Published (asc)",
     "atLeastOneKeywordIsRequired": "At least one keyword is required",
     "atLeastOneCharacterIsRequired": "At least one character is required"
   }

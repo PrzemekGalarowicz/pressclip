@@ -22,6 +22,7 @@ import {
   Plus,
   Search,
   Trash,
+  TrendingUp,
   UserPlus,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -56,10 +57,11 @@ export function AppSidebar() {
   const t = useTranslations('AppSidebar')
 
   const mainMenuItems = [
-    { title: t('bookmarks'), url: '/bookmarks', icon: Bookmark },
+    { title: t('trending'), url: '/trending', icon: TrendingUp },
     { title: t('searches'), url: '/searches', icon: FolderSearch },
     { title: t('schedule'), url: '/schedule', icon: CalendarSearch },
-    { title: t('trash'), url: '/trash', icon: Trash },
+    { title: t('bookmarks'), url: '/bookmarks', icon: Bookmark },
+    // { title: t('trash'), url: '/trash', icon: Trash },
   ]
 
   const projectsMenuItems = [
