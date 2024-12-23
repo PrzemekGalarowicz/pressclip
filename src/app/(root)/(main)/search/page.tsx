@@ -187,7 +187,7 @@ export function SearchForm({
 
         <div className="flex flex-wrap items-center justify-center gap-2 px-2">
           <FilterPopover
-            title={t('categories')}
+            title={t('categoriesTitle')}
             filterType="categories"
             filters={categories}
             onSelect={(selectedCategorie) => {
@@ -199,7 +199,7 @@ export function SearchForm({
           </FilterPopover>
 
           <FilterPopover
-            title={t('countries')}
+            title={t('countriesTitle')}
             filterType="countries"
             filters={countries}
             onSelect={(selectedCountrie) => {
@@ -211,7 +211,7 @@ export function SearchForm({
           </FilterPopover>
 
           <FilterPopover
-            title={t('languages')}
+            title={t('languagesTitle')}
             filterType="languages"
             filters={languages}
             onSelect={(selectedLanguage) => {
@@ -223,7 +223,7 @@ export function SearchForm({
           </FilterPopover>
 
           <SourcePopover
-            title={t('sources')}
+            title={t('sourcesTitle')}
             filterType="sources"
             filters={sources}
             countries={countries
