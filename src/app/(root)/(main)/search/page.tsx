@@ -21,6 +21,7 @@ import {
   BookOpenText,
   CalendarArrowDown,
   CalendarArrowUp,
+  CalendarIcon,
   Check,
   ChevronDown,
   Earth,
@@ -30,10 +31,11 @@ import {
   SearchIcon,
   Sparkles,
 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useFormatter, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import * as React from 'react'
 import { CircleFlag } from 'react-circle-flags'
+import { DateRange } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -51,6 +53,7 @@ import {
 import { AccentButton } from '@/components/accent-button'
 import { MultiInput } from '@/components/multi-input'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -225,7 +228,8 @@ export function SourcePopover(props: {
         }
       })
     }
-  }, [debouncedQuery, startTransition, t, toast, props.countries])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery, startTransition, t, toast])
 
   return (
     <Popover>
@@ -276,7 +280,7 @@ export function SourcePopover(props: {
             {!pending && sources.length === 0 && (
               <FilterListItem>
                 <FilterListItemLabel>
-                  <span className="block max-w-[170px] truncate">
+                  <span className="block max-w-[170px] truncate text-muted-foreground">
                     {t('noResults')}
                   </span>
                 </FilterListItemLabel>
@@ -325,13 +329,45 @@ export function SourcePopover(props: {
   )
 }
 
+export function DateRangePopover(props: {
+  className?: string
+  children?: React.ReactNode
+  selected: DateRange
+  onSelect: (range: DateRange | undefined) => void
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          className={cn('justify-between', props.className)}
+          variant="secondary"
+        >
+          {props.children}
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="px-0 py-1.5" align="start">
+        <div className="px-1.5">
+          <Calendar
+            mode="range"
+            selected={props.selected}
+            onSelect={props.onSelect}
+            disabled={(date) =>
+              date > new Date() || date < new Date('1900-01-01')
+            }
+            initialFocus
+          />
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 type SortByType = 'published_desc' | 'published_asc' | 'relevance'
 
 function SortByDropdown(props: {
   value: SortByType
-  onValueChange: (
-    value: 'published_desc' | 'published_asc' | 'relevance'
-  ) => void
+  onValueChange: (value: SortByType) => void
 }) {
   const t = useTranslations('SearchPage')
 
@@ -340,11 +376,18 @@ function SortByDropdown(props: {
       <DropdownMenuTrigger asChild>
         <Button variant="secondary">
           {props.value === 'published_desc' ? (
-            <CalendarArrowDown className="text-lime-500" />
+            <>
+              <CalendarArrowDown className="text-lime-500" />{' '}
+              {t('publishedDesc')}
+            </>
           ) : props.value === 'published_asc' ? (
-            <CalendarArrowUp className="text-lime-500" />
+            <>
+              <CalendarArrowUp className="text-lime-500" /> {t('publishedAsc')}
+            </>
           ) : (
-            <ArrowDownWideNarrow className="text-lime-500" />
+            <>
+              <ArrowDownWideNarrow className="text-lime-500" /> {t('relevance')}
+            </>
           )}
           <ChevronDown className="text-muted-foreground" />
         </Button>
@@ -354,11 +397,7 @@ function SortByDropdown(props: {
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
           value={props.value}
-          onValueChange={(value) =>
-            props.onValueChange(
-              value as 'relevance' | 'published_desc' | 'published_asc'
-            )
-          }
+          onValueChange={(value) => props.onValueChange(value as SortByType)}
         >
           <DropdownMenuRadioItem value="relevance">
             {t('relevance')}
@@ -395,6 +434,9 @@ export function SearchForm({
   ...props
 }: React.ComponentPropsWithRef<'form'>) {
   const t = useTranslations('SearchPage')
+
+  const format = useFormatter()
+
   const { toast } = useToast()
 
   const newsFormSchema = useNewsFormSchema()
@@ -419,6 +461,10 @@ export function SearchForm({
   const [languages, setLanguages] =
     React.useState<FilterLanguageType[]>(defaultLanguages)
   const [sortBy, setSortBy] = React.useState<SortByType>('relevance')
+  const [date, setDate] = React.useState<DateRange>({
+    from: new Date(),
+    to: new Date(),
+  })
 
   const [pending, startTransition] = React.useTransition()
   const onSubmit = (data: NewsFormData) => {
@@ -436,14 +482,6 @@ export function SearchForm({
       }
     })
   }
-
-  const getFilterLabel = (
-    defaultLabel: string,
-    selectedFiltersLength: number
-  ) =>
-    selectedFiltersLength > 0
-      ? `${selectedFiltersLength} ${defaultLabel}`
-      : defaultLabel
 
   const updateFilter = <
     T extends FilterType | FilterSourceType | FilterLanguageType,
@@ -504,7 +542,7 @@ export function SearchForm({
           </Button>
         </div>
 
-        <div className="flex flex-wrap items-center justify-start gap-2 px-2">
+        <div className="flex flex-wrap items-center justify-center gap-2 px-2">
           <FilterPopover
             title={t('categories')}
             filterType="categories"
@@ -514,10 +552,9 @@ export function SearchForm({
             }}
           >
             <LayoutList className="text-indigo-500" />{' '}
-            {getFilterLabel(
-              t('categories'),
-              categories.filter((category) => category.selected).length
-            )}
+            {t('categories', {
+              count: categories.filter((category) => category.selected).length,
+            })}
           </FilterPopover>
 
           <FilterPopover
@@ -529,10 +566,9 @@ export function SearchForm({
             }}
           >
             <Earth className="text-blue-500" />{' '}
-            {getFilterLabel(
-              t('countries'),
-              countries.filter((country) => country.selected).length
-            )}
+            {t('countries', {
+              count: countries.filter((country) => country.selected).length,
+            })}
           </FilterPopover>
 
           <FilterPopover
@@ -544,10 +580,9 @@ export function SearchForm({
             }}
           >
             <Languages className="text-sky-500" />{' '}
-            {getFilterLabel(
-              t('languages'),
-              languages.filter((language) => language.selected).length
-            )}
+            {t('languages', {
+              count: languages.filter((language) => language.selected).length,
+            })}
           </FilterPopover>
 
           <SourcePopover
@@ -563,11 +598,28 @@ export function SearchForm({
             }}
           >
             <BookOpenText className="text-cyan-500" />{' '}
-            {getFilterLabel(
-              t('sources'),
-              sources.filter((source) => source.selected).length
-            )}
+            {t('sources', {
+              count: sources.filter((source) => source.selected).length,
+            })}
           </SourcePopover>
+
+          <DateRangePopover
+            selected={date}
+            onSelect={(range: DateRange | undefined) => {
+              if (range) {
+                setDate(range)
+              }
+            }}
+          >
+            <CalendarIcon className="text-teal-500" />{' '}
+            {date.from &&
+              date.to &&
+              format.dateTimeRange(date.from, date.to, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+          </DateRangePopover>
 
           <SortByDropdown value={sortBy} onValueChange={setSortBy} />
         </div>
