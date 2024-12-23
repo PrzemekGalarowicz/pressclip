@@ -9,7 +9,6 @@ import {
 import { UserDropdown } from './user-dropdown'
 import {
   Album,
-  Bookmark,
   Bot,
   CalendarSearch,
   ChevronRight,
@@ -17,7 +16,6 @@ import {
   Flag,
   FlaskConical,
   Folder,
-  FolderOpen,
   FolderSearch,
   List,
   MoreHorizontal,
