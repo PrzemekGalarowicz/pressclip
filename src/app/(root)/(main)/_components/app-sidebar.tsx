@@ -38,6 +38,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
+import { Input } from '@/components/ui/input'
 import {
   Sidebar,
   SidebarContent,
@@ -237,6 +238,30 @@ export function AppSidebar() {
           </SidebarGroupLabel>
 
           <SidebarMenu>
+            <SidebarMenuItem
+              key="new-list"
+              className="flex items-center justify-between gap-2"
+            >
+              <div className="flex items-center justify-between gap-1">
+                {/* <div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="size-8 rounded-md"
+                  >
+                    <List className="size-5 text-muted-foreground" />
+                  </Button>
+                </div> */}
+                <Input className="h-8" placeholder="New list" />
+              </div>
+
+              <div>
+                <Button size="icon" className="size-8 rounded-md">
+                  <Plus />
+                  <span className="sr-only">{t('more')}</span>
+                </Button>
+              </div>
+            </SidebarMenuItem>
             {listMenuItems.map((item) => (
               <Collapsible key={item.title} asChild>
                 <SidebarMenuItem>
