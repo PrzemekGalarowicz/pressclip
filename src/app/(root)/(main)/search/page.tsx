@@ -7,10 +7,7 @@ import {
   useDefaultSources,
 } from './_hooks'
 import { FilterLabelType, FilterSourceType, FilterType } from './_type'
-import {
-  GetSourcesFormDataFields,
-  getSourcesAction,
-} from '@/app/actions/get-sources-action'
+import { getSourcesAction } from '@/app/actions/get-sources-action'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -35,6 +32,7 @@ import { CircleFlag } from 'react-circle-flags'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { useDebounceValue } from '@/hooks/use-debounce-value'
 import { useToast } from '@/hooks/use-toast'
 
 import { AppHeader } from '../_components/app-header'
@@ -165,6 +163,8 @@ export function FilterPopover(props: {
 export function SourcePopover(props: {
   className?: string
   children?: React.ReactNode
+  countries?: string
+  languages?: string
   title: string
   filterType: FilterLabelType
   filters: FilterSourceType[]
@@ -177,6 +177,10 @@ export function SourcePopover(props: {
   const t = useTranslations('SearchPage')
   const { toast } = useToast()
 
+  const [debouncedQuery, setQuery] = useDebounceValue('', 500)
+
+  const [pending, startTransition] = React.useTransition()
+
   const [sources, setSources] = React.useState<FilterSourceType[]>(
     props.filters
   )
@@ -184,25 +188,35 @@ export function SourcePopover(props: {
     setSources(props.filters)
   }, [props.filters])
 
-  const [pending, startTransition] = React.useTransition()
-  const onSearch = (query: GetSourcesFormDataFields['query']) => {
-    startTransition(async () => {
-      try {
-        if (query.length >= 3) {
-          const fetchedSources = await getSourcesAction({ query })
-          setSources([...fetchedSources, ...sources])
+  React.useEffect(() => {
+    if (debouncedQuery.length >= 3) {
+      startTransition(async () => {
+        try {
+          const fetchedSources = await getSourcesAction({
+            query: debouncedQuery,
+            countries: props.countries || '',
+            languages: props.languages || '',
+          })
+          setSources((prev) => [...fetchedSources, ...prev])
+        } catch (error) {
+          toast({
+            variant: 'destructive',
+            description: t('error'),
+          })
+          if (process.env.NODE_ENV === 'development') {
+            console.error(error)
+          }
         }
-      } catch (error) {
-        toast({
-          variant: 'destructive',
-          description: t('error'),
-        })
-        if (process.env.NODE_ENV === 'development') {
-          console.error(error)
-        }
-      }
-    })
-  }
+      })
+    }
+  }, [
+    debouncedQuery,
+    startTransition,
+    t,
+    toast,
+    props.countries,
+    props.languages,
+  ])
 
   return (
     <Popover>
@@ -227,10 +241,10 @@ export function SourcePopover(props: {
             placeholder={t('search')}
             disabled={pending}
             onChange={(event) => {
-              const query = event.target.value
-              onSearch(query)
+              const value = event.target.value
+              setQuery(value)
               if (props.onSearch) {
-                props.onSearch(query)
+                props.onSearch(value)
               }
             }}
           />
@@ -414,6 +428,12 @@ export function SearchForm({
     })
   }
 
+  const getSourcesFilterParams = (filters: FilterType[]) =>
+    filters
+      .filter((filter) => filter.selected)
+      .map((filter) => filter.icon)
+      .join(',')
+
   const getFilterLabel = (
     defaultLabel: string,
     selectedFiltersLength: number
@@ -496,21 +516,6 @@ export function SearchForm({
             )}
           </FilterPopover>
 
-          <SourcePopover
-            title={t('sources')}
-            filterType="sources"
-            filters={sources}
-            onSelect={(fetchedSources, selectedSource) => {
-              setSources(updateFilter(fetchedSources, selectedSource))
-            }}
-          >
-            <BookOpenText className="text-blue-500" />{' '}
-            {getFilterLabel(
-              t('sources'),
-              sources.filter((source) => source.selected).length
-            )}
-          </SourcePopover>
-
           <FilterPopover
             title={t('countries')}
             filterType="countries"
@@ -519,7 +524,7 @@ export function SearchForm({
               setCountries((prev) => updateFilter(prev, selectedCountrie))
             }}
           >
-            <Earth className="text-sky-500" />{' '}
+            <Earth className="text-blue-500" />{' '}
             {getFilterLabel(
               t('countries'),
               countries.filter((country) => country.selected).length
@@ -534,12 +539,29 @@ export function SearchForm({
               setLanguages((prev) => updateFilter(prev, selectedLanguage))
             }}
           >
-            <Languages className="text-cyan-500" />{' '}
+            <Languages className="text-sky-500" />{' '}
             {getFilterLabel(
               t('languages'),
               languages.filter((language) => language.selected).length
             )}
           </FilterPopover>
+
+          <SourcePopover
+            title={t('sources')}
+            filterType="sources"
+            filters={sources}
+            countries={getSourcesFilterParams(countries)}
+            languages={getSourcesFilterParams(languages)}
+            onSelect={(fetchedSources, selectedSource) => {
+              setSources(updateFilter(fetchedSources, selectedSource))
+            }}
+          >
+            <BookOpenText className="text-cyan-500" />{' '}
+            {getFilterLabel(
+              t('sources'),
+              sources.filter((source) => source.selected).length
+            )}
+          </SourcePopover>
 
           <SortByDropdown value={sortBy} onValueChange={setSortBy} />
         </div>

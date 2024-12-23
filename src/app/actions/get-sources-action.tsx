@@ -26,6 +26,8 @@ type Source = {
 
 const getSourcesSchema = z.object({
   query: z.string().trim().min(1),
+  countries: z.string().trim().optional(),
+  languages: z.string().trim().optional(),
 })
 
 export type GetSourcesFormDataFields = z.infer<typeof getSourcesSchema>
@@ -50,10 +52,24 @@ export async function getSourcesAction(
       throw new Error(t('invalidQuery'))
     }
 
-    const response = await fetch(
-      `http://api.mediastack.com/v1/sources?access_key=${process.env.MEDIASTACK_API_KEY}&search=${validated.data.query}&categories=general&limit=100`
-    )
+    let URL = `http://api.mediastack.com/v1/sources?access_key=${process.env.MEDIASTACK_API_KEY}&search=${validated.data.query}&limit=100&categories=general`
+    if (validated.data.countries) {
+      URL += `&countries=${validated.data.countries}`
+    }
+    if (validated.data.languages) {
+      URL += `&languages=${validated.data.languages}`
+    }
+
+    const response = await fetch(URL)
     const sources = await response.json()
+
+    if (!sources || sources.data?.length === 0) {
+      return []
+    }
+
+    if (sources.error) {
+      throw new Error(sources.error)
+    }
 
     const sourcesArray = sources.data.map((source: Source) => ({
       country: source.country,
