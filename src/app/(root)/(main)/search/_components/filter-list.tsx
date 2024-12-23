@@ -1,24 +1,13 @@
 import { cn } from '@/lib/utils'
-import { Check, ChevronDown, SearchIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 import * as React from 'react'
-import { CircleFlag } from 'react-circle-flags'
 
 import { Button, ButtonProps } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-
-import { FilterLabelType, FilterType } from '../_type'
 
 export function FilterList({
   className,
@@ -134,95 +123,5 @@ export function FilterListItemActionButton({
     <Button size={size} variant={variant} className={cn(className)} {...props}>
       {children}
     </Button>
-  )
-}
-
-export function FilterPopover(props: {
-  className?: string
-  children?: React.ReactNode
-  title: string
-  filterType: FilterLabelType
-  filters: FilterType[]
-  onSearch?: (query: string) => void
-  onSelect: (filter: FilterType) => void
-}) {
-  const t = useTranslations('SearchPage')
-
-  const [filteredFilteres, setFilteredFilteres] = React.useState(props.filters)
-  React.useEffect(() => {
-    setFilteredFilteres(props.filters)
-  }, [props.filters])
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          className={cn('justify-between', props.className)}
-          variant="secondary"
-        >
-          {props.children} <ChevronDown className="text-muted-foreground" />
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent className="max-w-72 px-0 py-1.5" align="start">
-        <h4 className="border-b px-3 pb-3 pt-1 font-serif text-sm font-medium">
-          {props.title}
-        </h4>
-
-        <div className="relative my-2 px-1.5">
-          <SearchIcon className="absolute left-5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            className="h-9 rounded-full pl-10"
-            placeholder={t('search')}
-            onChange={(event) => {
-              const query = event.target.value
-              const filtered = props.filters.filter((filter) =>
-                filter.label.toLowerCase().includes(query.toLowerCase())
-              )
-              setFilteredFilteres(filtered)
-
-              if (props.onSearch) {
-                props.onSearch(query)
-              }
-            }}
-          />
-        </div>
-
-        <div className="max-h-72 overflow-y-auto px-1.5">
-          <FilterList>
-            {filteredFilteres.map((filter, index) => (
-              <FilterListItem
-                key={`${filter.label}-${index}`}
-                onClick={() => props.onSelect(filter)}
-              >
-                <FilterListItemLabel>
-                  {props.filterType !== 'sources' && (
-                    <FilterListItemIcon>
-                      {props.filterType === 'categories' ? (
-                        <filter.icon className="size-4 text-muted-foreground" />
-                      ) : (
-                        <CircleFlag
-                          countryCode={filter.icon as string}
-                          className="size-6"
-                        />
-                      )}
-                    </FilterListItemIcon>
-                  )}
-
-                  {filter.label}
-                </FilterListItemLabel>
-
-                {filter.selected && (
-                  <FilterListItemAction>
-                    <Check className="text-muted-foreground" />
-                    <span className="sr-only">{t('selected')}</span>
-                  </FilterListItemAction>
-                )}
-              </FilterListItem>
-            ))}
-          </FilterList>
-        </div>
-      </PopoverContent>
-    </Popover>
   )
 }

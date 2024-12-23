@@ -4,6 +4,12 @@ export type FilterType = {
   selected: boolean
 }
 
+export type FilterSourceType = FilterType & {
+  url: string
+  language: string
+  country: string
+}
+
 export type FilterLabelType =
   | 'categories'
   | 'sources'

@@ -184,9 +184,30 @@ export function useDefaultLanguages() {
 export function useDefaultSources() {
   const defaultSources = React.useMemo(() => {
     return [
-      { label: 'Google News', icon: 'google', selected: false },
-      { label: 'BBC News', icon: 'bbc', selected: false },
-      { label: 'CNN News', icon: 'cnn', selected: false },
+      {
+        label: 'Google News',
+        icon: 'google',
+        selected: false,
+        url: 'https://news.google.com',
+        language: 'en',
+        country: 'us',
+      },
+      {
+        label: 'BBC News',
+        icon: 'bbc',
+        selected: false,
+        url: 'https://www.bbc.com/news',
+        language: 'en',
+        country: 'gb',
+      },
+      {
+        label: 'CNN News',
+        icon: 'cnn',
+        selected: false,
+        url: 'https://www.cnn.com',
+        language: 'en',
+        country: 'us',
+      },
     ]
   }, [])
 

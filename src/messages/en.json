@@ -1,4 +1,17 @@
 {
+  "Server": {
+    "accessDenied": "Access denied.",
+    "invalidCredentials": "Invalid credentials.",
+    "invalidQuery": "Invalid query.",
+    "folderAlreadyExists": "Folder with this name already exists.",
+    "parentFolderNotFound": "Parent folder not found.",
+    "errorCreatingFolder": "An error occurred while creating the folder.",
+    "errorGettingFolders": "An error occurred while getting folders.",
+    "errorUpdatingFolder": "An error occurred while updating the folder.",
+    "folderNotFound": "Folder not found.",
+    "fileNotFound": "File not found.",
+    "unexpectedError": "An unexpected error occurred. Please try again later."
+  },
   "Global": {
     "meta": {
       "title": "Pressclip - Your AI-Powered Personal News Assistant",
@@ -371,6 +384,9 @@
     "publishedDesc": "Published (desc)",
     "publishedAsc": "Published (asc)",
     "atLeastOneKeywordIsRequired": "At least one keyword is required",
-    "atLeastOneCharacterIsRequired": "At least one character is required"
+    "atLeastOneCharacterIsRequired": "At least one character is required",
+    "selected": "Selected",
+    "noResults": "No results found.",
+    "error": "Unexpected error occurred. Please try again later."
   }
 }

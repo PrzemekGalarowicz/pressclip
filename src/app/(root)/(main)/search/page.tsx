@@ -6,7 +6,11 @@ import {
   useDefaultLanguages,
   useDefaultSources,
 } from './_hooks'
-import { FilterLabelType, FilterRecordType, FilterType } from './_type'
+import { FilterLabelType, FilterSourceType, FilterType } from './_type'
+import {
+  GetSourcesFormDataFields,
+  getSourcesAction,
+} from '@/app/actions/get-sources-action'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -15,20 +19,32 @@ import {
   BookOpenText,
   CalendarArrowDown,
   CalendarArrowUp,
+  Check,
   ChevronDown,
   Earth,
+  ExternalLink,
   Languages,
   LayoutList,
   SearchIcon,
   Sparkles,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 import * as React from 'react'
+import { CircleFlag } from 'react-circle-flags'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { useToast } from '@/hooks/use-toast'
+
 import { AppHeader } from '../_components/app-header'
-import { FilterPopover } from './_components/filter-list'
+import {
+  FilterList,
+  FilterListItem,
+  FilterListItemAction,
+  FilterListItemIcon,
+  FilterListItemLabel,
+} from './_components/filter-list'
 import { AccentButton } from '@/components/accent-button'
 import { MultiInput } from '@/components/multi-input'
 import { Button } from '@/components/ui/button'
@@ -48,6 +64,243 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Skeleton } from '@/components/ui/skeleton'
+
+export function FilterPopover(props: {
+  className?: string
+  children?: React.ReactNode
+  title: string
+  filterType: FilterLabelType
+  filters: FilterType[]
+  onSearch?: (query: string) => void
+  onSelect: (filter: FilterType) => void
+}) {
+  const t = useTranslations('SearchPage')
+
+  const [filteredFilteres, setFilteredFilteres] = React.useState(props.filters)
+  React.useEffect(() => {
+    setFilteredFilteres(props.filters)
+  }, [props.filters])
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          className={cn('justify-between', props.className)}
+          variant="secondary"
+        >
+          {props.children} <ChevronDown className="text-muted-foreground" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="max-w-72 px-0 py-1.5" align="start">
+        <h4 className="border-b px-3 pb-3 pt-1 font-serif text-sm font-medium">
+          {props.title}
+        </h4>
+
+        <div className="relative my-2 px-1.5">
+          <SearchIcon className="absolute left-5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="h-9 rounded-full pl-10"
+            placeholder={t('search')}
+            onChange={(event) => {
+              const query = event.target.value
+              const filtered = props.filters.filter((filter) =>
+                filter.label.toLowerCase().includes(query.toLowerCase())
+              )
+              setFilteredFilteres(filtered)
+
+              if (props.onSearch) {
+                props.onSearch(query)
+              }
+            }}
+          />
+        </div>
+
+        <div className="max-h-72 overflow-y-auto px-1.5">
+          <FilterList>
+            {filteredFilteres.map((filter, index) => (
+              <FilterListItem
+                key={`${filter.label}-${index}`}
+                onClick={() => props.onSelect(filter)}
+              >
+                <FilterListItemLabel>
+                  {props.filterType !== 'sources' && (
+                    <FilterListItemIcon>
+                      {props.filterType === 'categories' ? (
+                        <filter.icon className="size-4 text-muted-foreground" />
+                      ) : (
+                        <CircleFlag
+                          countryCode={filter.icon as string}
+                          className="size-6"
+                        />
+                      )}
+                    </FilterListItemIcon>
+                  )}
+
+                  {filter.label}
+                </FilterListItemLabel>
+
+                {filter.selected && (
+                  <FilterListItemAction>
+                    <Check className="text-muted-foreground" />
+                    <span className="sr-only">{t('selected')}</span>
+                  </FilterListItemAction>
+                )}
+              </FilterListItem>
+            ))}
+          </FilterList>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+export function SourcePopover(props: {
+  className?: string
+  children?: React.ReactNode
+  title: string
+  filterType: FilterLabelType
+  filters: FilterSourceType[]
+  onSearch?: (query: string) => void
+  onSelect: (
+    fetchedSources: FilterSourceType[],
+    selectedSource: FilterSourceType
+  ) => void
+}) {
+  const t = useTranslations('SearchPage')
+  const { toast } = useToast()
+
+  const [sources, setSources] = React.useState<FilterSourceType[]>(
+    props.filters
+  )
+  React.useEffect(() => {
+    setSources(props.filters)
+  }, [props.filters])
+
+  const [pending, startTransition] = React.useTransition()
+  const onSearch = (query: GetSourcesFormDataFields['query']) => {
+    startTransition(async () => {
+      try {
+        if (query.length >= 3) {
+          const fetchedSources = await getSourcesAction({ query })
+          setSources([...fetchedSources, ...sources])
+        }
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          description: t('error'),
+        })
+        if (process.env.NODE_ENV === 'development') {
+          console.error(error)
+        }
+      }
+    })
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          className={cn('justify-between', props.className)}
+          variant="secondary"
+        >
+          {props.children} <ChevronDown className="text-muted-foreground" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="max-w-72 px-0 py-1.5" align="start">
+        <h4 className="border-b px-3 pb-3 pt-1 font-serif text-sm font-medium">
+          {props.title}
+        </h4>
+
+        <div className="relative my-2 px-1.5">
+          <SearchIcon className="absolute left-5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="h-9 rounded-full pl-10"
+            placeholder={t('search')}
+            disabled={pending}
+            onChange={(event) => {
+              const query = event.target.value
+              onSearch(query)
+              if (props.onSearch) {
+                props.onSearch(query)
+              }
+            }}
+          />
+        </div>
+
+        <div className="max-h-72 overflow-y-auto px-1.5">
+          <FilterList>
+            {pending &&
+              [1, 2, 3, 4, 5, 6, 7].map((n) => (
+                <FilterListItem key={n}>
+                  <FilterListItemLabel>
+                    <FilterListItemIcon>
+                      <Skeleton className="size-6 rounded-full" />
+                    </FilterListItemIcon>
+                    <Skeleton className="h-5 w-56 rounded-lg" />
+                  </FilterListItemLabel>
+                </FilterListItem>
+              ))}
+
+            {!pending && sources.length === 0 && (
+              <FilterListItem>
+                <FilterListItemLabel>
+                  <span className="block max-w-[170px] truncate">
+                    {t('noResults')}
+                  </span>
+                </FilterListItemLabel>
+              </FilterListItem>
+            )}
+
+            {!pending &&
+              sources.length > 0 &&
+              sources.map((source, index) => (
+                <FilterListItem
+                  key={`${source.label}-${index}`}
+                  onClick={() => props.onSelect(sources, source)}
+                >
+                  <FilterListItemLabel>
+                    <FilterListItemIcon>
+                      <CircleFlag
+                        countryCode={source.country as string}
+                        className="size-6"
+                      />
+                    </FilterListItemIcon>
+                    <span className="block max-w-[170px] truncate">
+                      {source.label}
+                    </span>
+
+                    <Link
+                      href={source.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="size-3 text-muted-foreground" />
+                    </Link>
+                  </FilterListItemLabel>
+
+                  {source.selected && (
+                    <FilterListItemAction>
+                      <Check className="text-muted-foreground" />
+                      <span className="sr-only">{t('selected')}</span>
+                    </FilterListItemAction>
+                  )}
+                </FilterListItem>
+              ))}
+          </FilterList>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 type SortByType = 'published_desc' | 'published_asc' | 'relevance'
 
@@ -114,11 +367,12 @@ function useNewsFormSchema() {
 }
 type NewsFormData = z.infer<ReturnType<typeof useNewsFormSchema>>
 
-export function SearchNewsForm({
+export function SearchForm({
   className,
   ...props
 }: React.ComponentPropsWithRef<'form'>) {
   const t = useTranslations('SearchPage')
+  const { toast } = useToast()
 
   const newsFormSchema = useNewsFormSchema()
   const form = useForm<NewsFormData>({
@@ -128,53 +382,57 @@ export function SearchNewsForm({
     },
   })
 
-  const categories = useDefaultCategories()
-  const countries = useDefaultCountries()
-  const sources = useDefaultSources()
-  const languages = useDefaultLanguages()
+  const defaultCategories = useDefaultCategories()
+  const defaultCountries = useDefaultCountries()
+  const defaultSources = useDefaultSources()
+  const defaultLanguages = useDefaultLanguages()
 
-  const defaultFilters = {
-    categories,
-    countries,
-    sources,
-    languages,
+  const [categories, setCategories] =
+    React.useState<FilterType[]>(defaultCategories)
+  const [countries, setCountries] =
+    React.useState<FilterType[]>(defaultCountries)
+  const [sources, setSources] =
+    React.useState<FilterSourceType[]>(defaultSources)
+  const [languages, setLanguages] =
+    React.useState<FilterType[]>(defaultLanguages)
+  const [sortBy, setSortBy] = React.useState<SortByType>('relevance')
+
+  const [pending, startTransition] = React.useTransition()
+  const onSubmit = (data: NewsFormData) => {
+    startTransition(async () => {
+      try {
+        console.log('onSubmit', data)
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          description: t('error'),
+        })
+        if (process.env.NODE_ENV === 'development') {
+          console.error(error)
+        }
+      }
+    })
   }
-
-  const [filters, setFilters] = React.useState<FilterRecordType>(defaultFilters)
-  const [sortBy, setSortBy] = React.useState<SortByType>('published_desc')
-
-  const [_, startTransition] = React.useTransition()
 
   const getFilterLabel = (
     defaultLabel: string,
     selectedFiltersLength: number
   ) => {
-    if (selectedFiltersLength > 0) {
-      return `${selectedFiltersLength} ${defaultLabel}`
-    }
-    return defaultLabel
+    return selectedFiltersLength > 0
+      ? `${selectedFiltersLength} ${defaultLabel}`
+      : defaultLabel
   }
 
-  const getSelectedFilters = (filterName: FilterLabelType) => {
-    return filters[filterName].filter((filter) => filter.selected)
-  }
-
-  const selectFilter = (filter: FilterType, filterName: FilterLabelType) => {
-    setFilters((prev) => ({
-      ...prev,
-      [filterName]: prev[filterName].map((f) => {
-        const isMatch = f.label === filter.label
-        return {
-          ...f,
-          selected: isMatch ? !filter.selected : f.selected,
-        }
-      }),
-    }))
-  }
-
-  const onSubmit = (data: NewsFormData) => {
-    startTransition(async () => {
-      console.log('onSubmit', data)
+  const updateFilter = <T extends FilterType | FilterSourceType>(
+    filters: T[],
+    selectedFilter: T
+  ): T[] => {
+    return filters.map((filter) => {
+      const isMatch = filter.label === selectedFilter.label
+      return {
+        ...filter,
+        selected: isMatch ? !selectedFilter.selected : filter.selected,
+      }
     })
   }
 
@@ -200,7 +458,7 @@ export function SearchNewsForm({
                       placeholder={t('addKeywordsPlaceholder')}
                       aria-invalid={fieldState.error ? 'true' : 'false'}
                       selectedOptions={field.value}
-                      onCheckedChange={field.onChange}
+                      disabled={pending}
                       {...field}
                     />
                   </div>
@@ -213,7 +471,9 @@ export function SearchNewsForm({
           <Button
             className="absolute right-2 top-1"
             size="icon"
-            disabled={form.formState.isSubmitting || !form.formState.isValid}
+            disabled={
+              form.formState.isSubmitting || !form.formState.isValid || pending
+            }
           >
             <ArrowRight />
             <span className="sr-only">{t('search')}</span>
@@ -224,49 +484,60 @@ export function SearchNewsForm({
           <FilterPopover
             title={t('categories')}
             filterType="categories"
-            filters={filters.categories}
-            onSelect={(filter) => selectFilter(filter, 'categories')}
+            filters={categories}
+            onSelect={(selectedCategorie) => {
+              setCategories((prev) => updateFilter(prev, selectedCategorie))
+            }}
           >
             <LayoutList className="text-indigo-500" />{' '}
             {getFilterLabel(
               t('categories'),
-              getSelectedFilters('categories').length
+              categories.filter((category) => category.selected).length
             )}
           </FilterPopover>
 
-          <FilterPopover
+          <SourcePopover
             title={t('sources')}
             filterType="sources"
-            filters={filters.sources}
-            onSelect={(filter) => selectFilter(filter, 'sources')}
+            filters={sources}
+            onSelect={(fetchedSources, selectedSource) => {
+              setSources(updateFilter(fetchedSources, selectedSource))
+            }}
           >
             <BookOpenText className="text-blue-500" />{' '}
-            {getFilterLabel(t('sources'), getSelectedFilters('sources').length)}
-          </FilterPopover>
+            {getFilterLabel(
+              t('sources'),
+              sources.filter((source) => source.selected).length
+            )}
+          </SourcePopover>
 
           <FilterPopover
             title={t('countries')}
             filterType="countries"
-            filters={filters.countries}
-            onSelect={(filter) => selectFilter(filter, 'countries')}
+            filters={countries}
+            onSelect={(selectedCountrie) => {
+              setCountries((prev) => updateFilter(prev, selectedCountrie))
+            }}
           >
             <Earth className="text-sky-500" />{' '}
             {getFilterLabel(
               t('countries'),
-              getSelectedFilters('countries').length
+              countries.filter((country) => country.selected).length
             )}
           </FilterPopover>
 
           <FilterPopover
             title={t('languages')}
             filterType="languages"
-            filters={filters.languages}
-            onSelect={(filter) => selectFilter(filter, 'languages')}
+            filters={languages}
+            onSelect={(selectedLanguage) => {
+              setLanguages((prev) => updateFilter(prev, selectedLanguage))
+            }}
           >
             <Languages className="text-cyan-500" />{' '}
             {getFilterLabel(
               t('languages'),
-              getSelectedFilters('languages').length
+              languages.filter((language) => language.selected).length
             )}
           </FilterPopover>
 
@@ -326,7 +597,7 @@ export default function SearchPage() {
 
       <SearchLayout>
         <div className="mb-0.5 w-full max-w-3xl transition-all duration-300">
-          <SearchNewsForm />
+          <SearchForm />
         </div>
       </SearchLayout>
     </>
