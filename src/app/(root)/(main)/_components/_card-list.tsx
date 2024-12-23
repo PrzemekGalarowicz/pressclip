@@ -39,7 +39,7 @@ export default function List() {
                   console.log('open')
                 }}
               >
-                <FolderOpen className="text-muted-foreground" /> {t('open')}
+                <Eye className="text-muted-foreground" /> {t('view')}
               </CardMenuItem>
               <CardMenuItem
                 onClick={() => {
@@ -96,7 +96,7 @@ export default function List() {
                   console.log('open')
                 }}
               >
-                <FolderOpen className="text-muted-foreground" /> {t('open')}
+                <Eye className="text-muted-foreground" /> {t('view')}
               </CardMenuItem>
               <CardMenuItem
                 onClick={() => {

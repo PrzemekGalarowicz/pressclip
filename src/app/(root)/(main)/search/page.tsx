@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import { DateRange } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
@@ -45,6 +46,16 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
+
+export function useHandleSearchParams() {
+  const router = useRouter()
+
+  return (name: string, value: string) => {
+    const query = new URLSearchParams()
+    query.set(name, value)
+    router.push(`/search?${query.toString()}`)
+  }
+}
 
 function useFilter<T extends { label: string; selected: boolean }>(
   defaultValues: T[]
@@ -87,9 +98,11 @@ export function SearchForm({
 
   const { toast } = useToast()
 
-  const newsFormSchema = useSearchFormSchema()
+  const setSearchParam = useHandleSearchParams()
+
+  const formSchema = useSearchFormSchema()
   const form = useForm<SearchFormData>({
-    resolver: zodResolver(newsFormSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       keywords: [],
     },
@@ -113,7 +126,7 @@ export function SearchForm({
   const onSubmit = (data: SearchFormData) => {
     startTransition(async () => {
       try {
-        console.log('onSubmit', data)
+        setSearchParam('keywords', data.keywords.join(','))
       } catch (error) {
         toast({
           variant: 'destructive',
@@ -131,15 +144,14 @@ export function SearchForm({
   >(
     filters: T[],
     selectedFilter: T
-  ): T[] => {
-    return filters.map((filter) => {
-      const isMatch = filter.label === selectedFilter.label
-      return {
-        ...filter,
-        selected: isMatch ? !selectedFilter.selected : filter.selected,
-      }
-    })
-  }
+  ): T[] =>
+    filters.map((filter) => ({
+      ...filter,
+      selected:
+        filter.label === selectedFilter.label
+          ? !selectedFilter.selected
+          : filter.selected,
+    }))
 
   return (
     <Form {...form}>

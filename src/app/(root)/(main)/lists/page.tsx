@@ -8,18 +8,18 @@ export async function generateMetadata() {
   const t = await getTranslations('Global')
 
   return {
-    title: `${t('meta.bookmarksTitle')} / ${process.env.NEXT_PUBLIC_APP_NAME}`,
+    title: `${t('meta.listsTitle')} / ${process.env.NEXT_PUBLIC_APP_NAME}`,
     robots: 'noindex',
   }
 }
 
-export default async function BookmarksPage() {
-  const t = await getTranslations('BookmarksPage')
+export default async function ListsPage() {
+  const t = await getTranslations('ListsPage')
   const g = await getTranslations('Global')
 
   return (
     <>
-      <AppHeader title={t('bookmarks')}>
+      <AppHeader title={t('lists')}>
         <div className="ml-auto flex items-center gap-2">
           <AccentButton href="/" icon={<Sparkles />}>
             {g('upgrade')}
@@ -27,7 +27,7 @@ export default async function BookmarksPage() {
         </div>
       </AppHeader>
 
-      <div>Bookmarks</div>
+      <div>Lists</div>
     </>
   )
 }

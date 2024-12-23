@@ -29,6 +29,7 @@
       "supportTitle": "Support",
       "trashTitle": "Trash",
       "clippedTitle": "Clipped",
+      "listsTitle": "Lists",
       "notFoundPageTitle": "404 / Page not found"
     },
     "loading": "Loading...",
@@ -264,14 +265,19 @@
     "searches": "Searches",
     "schedule": "Schedule",
     "trash": "Trash",
-    "add": "Add new project",
+    "addProject": "Add new project",
+    "addList": "Add new list",
     "more": "More",
     "edit": "Edit",
     "share": "Share",
     "delete": "Delete",
     "toggle": "Toggle Menu",
     "projects": "Projects",
-    "trending": "Trending"
+    "lists": "Lists",
+    "favourites": "Favourites",
+    "readLater": "Read later",
+    "trending": "Trending",
+    "view": "View"
   },
   "UserDropdown": {
     "subscription": "Subscription",
@@ -344,8 +350,8 @@
     "update": "Update account",
     "deleteAccount": "Delete user account"
   },
-  "BookmarksPage": {
-    "bookmarks": "Bookmarks",
+  "ListsPage": {
+    "lists": "Lists",
     "loadMore": "Load more"
   },
   "SearchesPage": {

@@ -8,19 +8,23 @@ import {
 } from './card'
 import { UserDropdown } from './user-dropdown'
 import {
+  Album,
   Bookmark,
   Bot,
   CalendarSearch,
   ChevronRight,
+  Eye,
   Flag,
   FlaskConical,
   Folder,
   FolderOpen,
   FolderSearch,
+  List,
   MoreHorizontal,
   Pen,
   Plus,
   Search,
+  Star,
   Trash,
   TrendingUp,
   UserPlus,
@@ -60,11 +64,33 @@ export function AppSidebar() {
     { title: t('trending'), url: '/trending', icon: TrendingUp },
     { title: t('searches'), url: '/searches', icon: FolderSearch },
     { title: t('schedule'), url: '/schedule', icon: CalendarSearch },
-    { title: t('bookmarks'), url: '/bookmarks', icon: Bookmark },
-    // { title: t('trash'), url: '/trash', icon: Trash },
   ]
 
-  const projectsMenuItems = [
+  const listMenuItems = [
+    {
+      title: t('favourites'),
+      url: '/lists/favourites',
+      icon: Star,
+      color: 'text-yellow-500',
+      isEditable: false,
+    },
+    {
+      title: t('readLater'),
+      url: '/lists/read-later',
+      icon: Album,
+      color: 'text-amber-500',
+      isEditable: false,
+    },
+    {
+      title: 'Example list',
+      url: '/lists/example-list',
+      icon: List,
+      color: 'text-muted-foreground',
+      isEditable: true,
+    },
+  ]
+
+  const projectMenuItems = [
     {
       title: 'Science',
       url: '/feeds/science',
@@ -155,11 +181,6 @@ export function AppSidebar() {
     },
   ]
 
-  // const projects = [
-  //   { name: 'Project 1', url: '/projects/1', icon: Folder },
-  //   { name: 'Project 2', url: '/projects/2', icon: Folder },
-  // ]
-
   return (
     <Sidebar className="!border-0">
       <SidebarHeader>
@@ -201,20 +222,110 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center justify-between">
-            {t('projects')}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-5 rounded-lg text-primary"
-            >
-              <Plus />
-              <span className="sr-only">{t('add')}</span>
-            </Button>
+          <SidebarGroupLabel className="flex items-center justify-between gap-4">
+            <Link href="/lists" className="w-full">
+              {t('lists')}
+            </Link>
+            <div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-5 rounded-lg text-primary"
+              >
+                <Plus />
+                <span className="sr-only">{t('addList')}</span>
+              </Button>
+            </div>
           </SidebarGroupLabel>
 
           <SidebarMenu>
-            {projectsMenuItems.map((item) => (
+            {listMenuItems.map((item) => (
+              <Collapsible key={item.title} asChild>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className="h-9"
+                  >
+                    <a href={item.url}>
+                      <item.icon
+                        className={
+                          item.color ? item.color : 'text-muted-foreground'
+                        }
+                      />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+
+                  <CardMenu>
+                    <CardMenuTrigger asChild>
+                      <SidebarMenuAction className="mr-0.5 mt-0.5" showOnHover>
+                        <MoreHorizontal />
+                        <span className="sr-only">{t('more')}</span>
+                      </SidebarMenuAction>
+                    </CardMenuTrigger>
+                    <CardMenuContent className="z-10" align="start">
+                      <CardMenuItem
+                        onClick={() => {
+                          console.log('open')
+                        }}
+                      >
+                        <Eye className="text-muted-foreground" />
+                        {t('view')}
+                      </CardMenuItem>
+                      <CardMenuItem
+                        onClick={() => {
+                          console.log('edit')
+                        }}
+                      >
+                        <Pen className="text-muted-foreground" /> {t('edit')}
+                      </CardMenuItem>
+                      {item.isEditable && (
+                        <>
+                          <CardMenuItem
+                            onClick={() => {
+                              console.log('share')
+                            }}
+                          >
+                            <UserPlus className="text-muted-foreground" />
+                            {t('share')}
+                          </CardMenuItem>
+                          <CardMenuItem
+                            onClick={() => {
+                              console.log('delete')
+                            }}
+                          >
+                            <Trash className="text-destructive" /> {t('delete')}
+                          </CardMenuItem>
+                        </>
+                      )}
+                    </CardMenuContent>
+                  </CardMenu>
+                </SidebarMenuItem>
+              </Collapsible>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="flex items-center justify-between gap-4">
+            <Link href="/lists" className="w-full">
+              {t('projects')}
+            </Link>
+            <div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-5 rounded-lg text-primary"
+              >
+                <Plus />
+                <span className="sr-only">{t('addProject')}</span>
+              </Button>
+            </div>
+          </SidebarGroupLabel>
+
+          <SidebarMenu>
+            {projectMenuItems.map((item) => (
               <Collapsible key={item.title} asChild>
                 <SidebarMenuItem>
                   <SidebarMenuButton
@@ -245,8 +356,8 @@ export function AppSidebar() {
                           console.log('open')
                         }}
                       >
-                        <FolderOpen className="text-muted-foreground" />
-                        {t('open')}
+                        <Eye className="text-muted-foreground" />
+                        {t('view')}
                       </CardMenuItem>
                       <CardMenuItem
                         onClick={() => {
@@ -328,8 +439,8 @@ export function AppSidebar() {
                         console.log('open')
                       }}
                     >
-                      <FolderOpen className="text-muted-foreground" />{' '}
-                      {t('open')}
+                      <Eye className="text-muted-foreground" />{' '}
+                      {t('view')}
                     </CardMenuItem>
                     <CardMenuItem
                       onClick={() => {
