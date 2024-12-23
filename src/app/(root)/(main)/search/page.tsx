@@ -6,7 +6,12 @@ import {
   useDefaultLanguages,
   useDefaultSources,
 } from './_hooks'
-import { FilterLabelType, FilterSourceType, FilterType } from './_type'
+import {
+  FilterLabelType,
+  FilterLanguageType,
+  FilterSourceType,
+  FilterType,
+} from './_type'
 import { getSourcesAction } from '@/app/actions/get-sources-action'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -70,14 +75,25 @@ import {
 } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export function FilterPopover(props: {
+export function removeDuplicatesByName(arr: FilterSourceType[]) {
+  return arr.reduce((acc: FilterSourceType[], current: FilterSourceType) => {
+    if (!acc.find((item: FilterSourceType) => item.label === current.label)) {
+      acc.push(current)
+    }
+    return acc
+  }, [])
+}
+
+export function FilterPopover<
+  T extends FilterType | FilterLanguageType,
+>(props: {
   className?: string
   children?: React.ReactNode
   title: string
   filterType: FilterLabelType
-  filters: FilterType[]
+  filters: T[]
   onSearch?: (query: string) => void
-  onSelect: (filter: FilterType) => void
+  onSelect: (filter: T) => void
 }) {
   const t = useTranslations('SearchPage')
 
@@ -164,7 +180,6 @@ export function SourcePopover(props: {
   className?: string
   children?: React.ReactNode
   countries?: string
-  languages?: string
   title: string
   filterType: FilterLabelType
   filters: FilterSourceType[]
@@ -195,9 +210,10 @@ export function SourcePopover(props: {
           const fetchedSources = await getSourcesAction({
             query: debouncedQuery,
             countries: props.countries || '',
-            languages: props.languages || '',
           })
-          setSources((prev) => [...fetchedSources, ...prev])
+          setSources((prev) =>
+            removeDuplicatesByName([...fetchedSources, ...prev])
+          )
         } catch (error) {
           toast({
             variant: 'destructive',
@@ -209,14 +225,7 @@ export function SourcePopover(props: {
         }
       })
     }
-  }, [
-    debouncedQuery,
-    startTransition,
-    t,
-    toast,
-    props.countries,
-    props.languages,
-  ])
+  }, [debouncedQuery, startTransition, t, toast, props.countries])
 
   return (
     <Popover>
@@ -408,7 +417,7 @@ export function SearchForm({
   const [sources, setSources] =
     React.useState<FilterSourceType[]>(defaultSources)
   const [languages, setLanguages] =
-    React.useState<FilterType[]>(defaultLanguages)
+    React.useState<FilterLanguageType[]>(defaultLanguages)
   const [sortBy, setSortBy] = React.useState<SortByType>('relevance')
 
   const [pending, startTransition] = React.useTransition()
@@ -428,22 +437,17 @@ export function SearchForm({
     })
   }
 
-  const getSourcesFilterParams = (filters: FilterType[]) =>
-    filters
-      .filter((filter) => filter.selected)
-      .map((filter) => filter.icon)
-      .join(',')
-
   const getFilterLabel = (
     defaultLabel: string,
     selectedFiltersLength: number
-  ) => {
-    return selectedFiltersLength > 0
+  ) =>
+    selectedFiltersLength > 0
       ? `${selectedFiltersLength} ${defaultLabel}`
       : defaultLabel
-  }
 
-  const updateFilter = <T extends FilterType | FilterSourceType>(
+  const updateFilter = <
+    T extends FilterType | FilterSourceType | FilterLanguageType,
+  >(
     filters: T[],
     selectedFilter: T
   ): T[] => {
@@ -550,8 +554,10 @@ export function SearchForm({
             title={t('sources')}
             filterType="sources"
             filters={sources}
-            countries={getSourcesFilterParams(countries)}
-            languages={getSourcesFilterParams(languages)}
+            countries={countries
+              .filter((country) => country.selected)
+              .map((country) => country.icon)
+              .join(',')}
             onSelect={(fetchedSources, selectedSource) => {
               setSources(updateFilter(fetchedSources, selectedSource))
             }}

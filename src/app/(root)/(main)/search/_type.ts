@@ -10,6 +10,10 @@ export type FilterSourceType = FilterType & {
   country: string
 }
 
+export type FilterLanguageType = FilterType & {
+  code: string
+}
+
 export type FilterLabelType =
   | 'categories'
   | 'sources'

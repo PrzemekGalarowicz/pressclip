@@ -5,15 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
 import { FilterSourceType } from '../(root)/(main)/search/_type'
-
-function removeDuplicatesByName(arr: FilterSourceType[]) {
-  return arr.reduce((acc: FilterSourceType[], current: FilterSourceType) => {
-    if (!acc.find((item: FilterSourceType) => item.label === current.label)) {
-      acc.push(current)
-    }
-    return acc
-  }, [])
-}
+import { removeDuplicatesByName } from '../(root)/(main)/search/page'
 
 type Source = {
   name: string
@@ -27,7 +19,6 @@ type Source = {
 const getSourcesSchema = z.object({
   query: z.string().trim().min(1),
   countries: z.string().trim().optional(),
-  languages: z.string().trim().optional(),
 })
 
 export type GetSourcesFormDataFields = z.infer<typeof getSourcesSchema>
@@ -55,9 +46,6 @@ export async function getSourcesAction(
     let URL = `http://api.mediastack.com/v1/sources?access_key=${process.env.MEDIASTACK_API_KEY}&search=${validated.data.query}&limit=100&categories=general`
     if (validated.data.countries) {
       URL += `&countries=${validated.data.countries}`
-    }
-    if (validated.data.languages) {
-      URL += `&languages=${validated.data.languages}`
     }
 
     const response = await fetch(URL)
