@@ -1,68 +1,43 @@
 'use client'
 
 import {
-  useDefaultCategories,
-  useDefaultCountries,
-  useDefaultLanguages,
-  useDefaultSources,
-} from './_hooks'
-import {
-  FilterLabelType,
-  FilterLanguageType,
-  FilterSourceType,
-  FilterType,
-} from './_type'
-import { getSourcesAction } from '@/app/actions/get-sources-action'
+  DEFAULT_CATEGORIES,
+  DEFAULT_COUNTRIES,
+  DEFAULT_LANGUAGES,
+  DEFAULT_SOURCES,
+} from '@/consts'
 import { cn } from '@/lib/utils'
+import { FilterLanguageType, FilterSourceType, FilterType } from '@/type'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  ArrowDownWideNarrow,
   ArrowRight,
   BookOpenText,
-  CalendarArrowDown,
-  CalendarArrowUp,
   CalendarIcon,
-  Check,
-  ChevronDown,
   Earth,
-  ExternalLink,
   Languages,
   LayoutList,
   SearchIcon,
   Sparkles,
 } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
-import Link from 'next/link'
 import * as React from 'react'
-import { CircleFlag } from 'react-circle-flags'
 import { DateRange } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { useDebounceValue } from '@/hooks/use-debounce-value'
 import { useToast } from '@/hooks/use-toast'
 
 import { AppHeader } from '../_components/app-header'
 import {
-  FilterList,
-  FilterListItem,
-  FilterListItemAction,
-  FilterListItemIcon,
-  FilterListItemLabel,
-} from './_components/filter-list'
+  DateRangePopover,
+  FilterPopover,
+  SortByDropdown,
+  SortByType,
+  SourcePopover,
+} from './_components/filter-popover'
 import { AccentButton } from '@/components/accent-button'
 import { MultiInput } from '@/components/multi-input'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import {
   Form,
   FormControl,
@@ -70,351 +45,24 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Skeleton } from '@/components/ui/skeleton'
 
-export function removeDuplicatesByName(arr: FilterSourceType[]) {
-  return arr.reduce((acc: FilterSourceType[], current: FilterSourceType) => {
-    if (!acc.find((item: FilterSourceType) => item.label === current.label)) {
-      acc.push(current)
-    }
-    return acc
-  }, [])
+function useFilter<T extends { label: string; selected: boolean }>(
+  defaultValues: T[]
+): [number, T[], React.Dispatch<React.SetStateAction<T[]>>] {
+  const t = useTranslations('DefaultFilters')
+
+  const defaults = React.useMemo(
+    () => defaultValues.map((val) => ({ ...val, label: t(val.label) })),
+    [t, defaultValues]
+  )
+  const [values, setValues] = React.useState<T[]>(defaults)
+
+  const selectedCount = values.filter((value) => value.selected).length
+
+  return [selectedCount, values, setValues]
 }
 
-export function FilterPopover<
-  T extends FilterType | FilterLanguageType,
->(props: {
-  className?: string
-  children?: React.ReactNode
-  title: string
-  filterType: FilterLabelType
-  filters: T[]
-  onSearch?: (query: string) => void
-  onSelect: (filter: T) => void
-}) {
-  const t = useTranslations('SearchPage')
-
-  const [filteredFilteres, setFilteredFilteres] = React.useState(props.filters)
-  React.useEffect(() => {
-    setFilteredFilteres(props.filters)
-  }, [props.filters])
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          className={cn('justify-between', props.className)}
-          variant="secondary"
-        >
-          {props.children} <ChevronDown className="text-muted-foreground" />
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent className="max-w-72 px-0 py-1.5" align="start">
-        <h4 className="border-b px-3 pb-3 pt-1 font-serif text-sm font-medium">
-          {props.title}
-        </h4>
-
-        <div className="relative my-2 px-1.5">
-          <SearchIcon className="absolute left-5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            className="h-9 rounded-full pl-10"
-            placeholder={t('search')}
-            onChange={(event) => {
-              const query = event.target.value
-              const filtered = props.filters.filter((filter) =>
-                filter.label.toLowerCase().includes(query.toLowerCase())
-              )
-              setFilteredFilteres(filtered)
-
-              if (props.onSearch) {
-                props.onSearch(query)
-              }
-            }}
-          />
-        </div>
-
-        <div className="max-h-72 overflow-y-auto px-1.5">
-          <FilterList>
-            {filteredFilteres.map((filter, index) => (
-              <FilterListItem
-                key={`${filter.label}-${index}`}
-                onClick={() => props.onSelect(filter)}
-              >
-                <FilterListItemLabel>
-                  {props.filterType !== 'sources' && (
-                    <FilterListItemIcon>
-                      {props.filterType === 'categories' ? (
-                        <filter.icon className="size-4 text-muted-foreground" />
-                      ) : (
-                        <CircleFlag
-                          countryCode={filter.icon as string}
-                          className="size-6"
-                        />
-                      )}
-                    </FilterListItemIcon>
-                  )}
-
-                  {filter.label}
-                </FilterListItemLabel>
-
-                {filter.selected && (
-                  <FilterListItemAction>
-                    <Check className="text-muted-foreground" />
-                    <span className="sr-only">{t('selected')}</span>
-                  </FilterListItemAction>
-                )}
-              </FilterListItem>
-            ))}
-          </FilterList>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-export function SourcePopover(props: {
-  className?: string
-  children?: React.ReactNode
-  countries?: string
-  title: string
-  filterType: FilterLabelType
-  filters: FilterSourceType[]
-  onSearch?: (query: string) => void
-  onSelect: (
-    fetchedSources: FilterSourceType[],
-    selectedSource: FilterSourceType
-  ) => void
-}) {
-  const t = useTranslations('SearchPage')
-  const { toast } = useToast()
-
-  const [debouncedQuery, setQuery] = useDebounceValue('', 500)
-
-  const [pending, startTransition] = React.useTransition()
-
-  const [sources, setSources] = React.useState<FilterSourceType[]>(
-    props.filters
-  )
-  React.useEffect(() => {
-    setSources(props.filters)
-  }, [props.filters])
-
-  React.useEffect(() => {
-    if (debouncedQuery.length >= 3) {
-      startTransition(async () => {
-        try {
-          const fetchedSources = await getSourcesAction({
-            query: debouncedQuery,
-            countries: props.countries || '',
-          })
-          setSources((prev) =>
-            removeDuplicatesByName([...fetchedSources, ...prev])
-          )
-        } catch (error) {
-          toast({
-            variant: 'destructive',
-            description: t('error'),
-          })
-          if (process.env.NODE_ENV === 'development') {
-            console.error(error)
-          }
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, startTransition, t, toast])
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          className={cn('justify-between', props.className)}
-          variant="secondary"
-        >
-          {props.children} <ChevronDown className="text-muted-foreground" />
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent className="max-w-72 px-0 py-1.5" align="start">
-        <h4 className="border-b px-3 pb-3 pt-1 font-serif text-sm font-medium">
-          {props.title}
-        </h4>
-
-        <div className="relative my-2 px-1.5">
-          <SearchIcon className="absolute left-5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            className="h-9 rounded-full pl-10"
-            placeholder={t('search')}
-            disabled={pending}
-            onChange={(event) => {
-              const value = event.target.value
-              setQuery(value)
-              if (props.onSearch) {
-                props.onSearch(value)
-              }
-            }}
-          />
-        </div>
-
-        <div className="max-h-72 overflow-y-auto px-1.5">
-          <FilterList>
-            {pending &&
-              [1, 2, 3, 4, 5, 6, 7].map((n) => (
-                <FilterListItem key={n}>
-                  <FilterListItemLabel>
-                    <FilterListItemIcon>
-                      <Skeleton className="size-6 rounded-full" />
-                    </FilterListItemIcon>
-                    <Skeleton className="h-5 w-56 rounded-lg" />
-                  </FilterListItemLabel>
-                </FilterListItem>
-              ))}
-
-            {!pending && sources.length === 0 && (
-              <FilterListItem>
-                <FilterListItemLabel>
-                  <span className="block max-w-[170px] truncate text-muted-foreground">
-                    {t('noResults')}
-                  </span>
-                </FilterListItemLabel>
-              </FilterListItem>
-            )}
-
-            {!pending &&
-              sources.length > 0 &&
-              sources.map((source, index) => (
-                <FilterListItem
-                  key={`${source.label}-${index}`}
-                  onClick={() => props.onSelect(sources, source)}
-                >
-                  <FilterListItemLabel>
-                    <FilterListItemIcon>
-                      <CircleFlag
-                        countryCode={source.country as string}
-                        className="size-6"
-                      />
-                    </FilterListItemIcon>
-                    <span className="block max-w-[170px] truncate">
-                      {source.label}
-                    </span>
-
-                    <Link
-                      href={source.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ExternalLink className="size-3 text-muted-foreground" />
-                    </Link>
-                  </FilterListItemLabel>
-
-                  {source.selected && (
-                    <FilterListItemAction>
-                      <Check className="text-muted-foreground" />
-                      <span className="sr-only">{t('selected')}</span>
-                    </FilterListItemAction>
-                  )}
-                </FilterListItem>
-              ))}
-          </FilterList>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-export function DateRangePopover(props: {
-  className?: string
-  children?: React.ReactNode
-  selected: DateRange
-  onSelect: (range: DateRange | undefined) => void
-}) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          className={cn('justify-between', props.className)}
-          variant="secondary"
-        >
-          {props.children}
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent className="px-0 py-1.5" align="start">
-        <div className="px-1.5">
-          <Calendar
-            mode="range"
-            selected={props.selected}
-            onSelect={props.onSelect}
-            disabled={(date) =>
-              date > new Date() || date < new Date('1900-01-01')
-            }
-            initialFocus
-          />
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-type SortByType = 'published_desc' | 'published_asc' | 'relevance'
-
-function SortByDropdown(props: {
-  value: SortByType
-  onValueChange: (value: SortByType) => void
-}) {
-  const t = useTranslations('SearchPage')
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="secondary">
-          {props.value === 'published_desc' ? (
-            <>
-              <CalendarArrowDown className="text-lime-500" />{' '}
-              {t('publishedDesc')}
-            </>
-          ) : props.value === 'published_asc' ? (
-            <>
-              <CalendarArrowUp className="text-lime-500" /> {t('publishedAsc')}
-            </>
-          ) : (
-            <>
-              <ArrowDownWideNarrow className="text-lime-500" /> {t('relevance')}
-            </>
-          )}
-          <ChevronDown className="text-muted-foreground" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>{t('sortOptions')}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={props.value}
-          onValueChange={(value) => props.onValueChange(value as SortByType)}
-        >
-          <DropdownMenuRadioItem value="relevance">
-            {t('relevance')}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="published_desc">
-            {t('publishedDesc')}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="published_asc">
-            {t('publishedAsc')}
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
-function useNewsFormSchema() {
+function useSearchFormSchema() {
   const t = useTranslations('SearchPage')
 
   const schema = React.useMemo(() => {
@@ -427,7 +75,7 @@ function useNewsFormSchema() {
 
   return schema
 }
-type NewsFormData = z.infer<ReturnType<typeof useNewsFormSchema>>
+type SearchFormData = z.infer<ReturnType<typeof useSearchFormSchema>>
 
 export function SearchForm({
   className,
@@ -439,27 +87,22 @@ export function SearchForm({
 
   const { toast } = useToast()
 
-  const newsFormSchema = useNewsFormSchema()
-  const form = useForm<NewsFormData>({
+  const newsFormSchema = useSearchFormSchema()
+  const form = useForm<SearchFormData>({
     resolver: zodResolver(newsFormSchema),
     defaultValues: {
       keywords: [],
     },
   })
 
-  const defaultCategories = useDefaultCategories()
-  const defaultCountries = useDefaultCountries()
-  const defaultSources = useDefaultSources()
-  const defaultLanguages = useDefaultLanguages()
-
-  const [categories, setCategories] =
-    React.useState<FilterType[]>(defaultCategories)
-  const [countries, setCountries] =
-    React.useState<FilterType[]>(defaultCountries)
-  const [sources, setSources] =
-    React.useState<FilterSourceType[]>(defaultSources)
-  const [languages, setLanguages] =
-    React.useState<FilterLanguageType[]>(defaultLanguages)
+  const [categoriesCount, categories, setCategories] =
+    useFilter<FilterType>(DEFAULT_CATEGORIES)
+  const [countriesCount, countries, setCountries] =
+    useFilter<FilterType>(DEFAULT_COUNTRIES)
+  const [languagesCount, languages, setLanguages] =
+    useFilter<FilterLanguageType>(DEFAULT_LANGUAGES)
+  const [sourcesCount, sources, setSources] =
+    useFilter<FilterSourceType>(DEFAULT_SOURCES)
   const [sortBy, setSortBy] = React.useState<SortByType>('relevance')
   const [date, setDate] = React.useState<DateRange>({
     from: new Date(),
@@ -467,7 +110,7 @@ export function SearchForm({
   })
 
   const [pending, startTransition] = React.useTransition()
-  const onSubmit = (data: NewsFormData) => {
+  const onSubmit = (data: SearchFormData) => {
     startTransition(async () => {
       try {
         console.log('onSubmit', data)
@@ -552,9 +195,7 @@ export function SearchForm({
             }}
           >
             <LayoutList className="text-indigo-500" />{' '}
-            {t('categories', {
-              count: categories.filter((category) => category.selected).length,
-            })}
+            {t('categories', { count: categoriesCount })}
           </FilterPopover>
 
           <FilterPopover
@@ -566,9 +207,7 @@ export function SearchForm({
             }}
           >
             <Earth className="text-blue-500" />{' '}
-            {t('countries', {
-              count: countries.filter((country) => country.selected).length,
-            })}
+            {t('countries', { count: countriesCount })}
           </FilterPopover>
 
           <FilterPopover
@@ -580,9 +219,7 @@ export function SearchForm({
             }}
           >
             <Languages className="text-sky-500" />{' '}
-            {t('languages', {
-              count: languages.filter((language) => language.selected).length,
-            })}
+            {t('languages', { count: languagesCount })}
           </FilterPopover>
 
           <SourcePopover
@@ -598,9 +235,7 @@ export function SearchForm({
             }}
           >
             <BookOpenText className="text-cyan-500" />{' '}
-            {t('sources', {
-              count: sources.filter((source) => source.selected).length,
-            })}
+            {t('sources', { count: sourcesCount })}
           </SourcePopover>
 
           <DateRangePopover
@@ -634,6 +269,7 @@ export function SearchLayout({
   ...props
 }: React.ComponentPropsWithRef<'div'>) {
   const t = useTranslations('SearchPage')
+
   return (
     <div
       className={cn(

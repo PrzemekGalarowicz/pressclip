@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils'
 import { useScroll } from '@/hooks/use-scroll'
 
 import { Filters } from '../../_components/filters'
-import { SearchDialog } from '../../_components/search-dialog'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
 export default function PageHeader() {
@@ -27,7 +26,7 @@ export default function PageHeader() {
       </div>
 
       <div className="order-1 col-span-4 md:order-2 md:col-span-6">
-        <SearchDialog />
+        {/* TODO: */}
       </div>
 
       <div className="order-3 col-span-4 flex items-center justify-end gap-4 md:order-3 md:col-span-3">

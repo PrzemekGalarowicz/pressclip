@@ -1,11 +1,11 @@
 'use server'
 
+import { removeDuplicatesByName } from '@/lib/utils'
 import { auth } from '@clerk/nextjs/server'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
-import { FilterSourceType } from '../(root)/(main)/search/_type'
-import { removeDuplicatesByName } from '../(root)/(main)/search/page'
+import { FilterSourceType } from '../../type'
 
 type Source = {
   name: string

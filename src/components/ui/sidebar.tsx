@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils'
 import { Slot } from '@radix-ui/react-slot'
 import { VariantProps, cva } from 'class-variance-authority'
-import { Menu, PanelRightClose, PanelRightOpen } from 'lucide-react'
+import { PanelRightClose, PanelRightOpen } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import * as React from 'react'
 
