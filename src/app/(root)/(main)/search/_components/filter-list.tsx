@@ -156,8 +156,6 @@ export function FilterPopover({
 }) {
   const t = useTranslations('SearchPage')
 
-  const [filteredFilters, setFilteredFilters] = React.useState(filters)
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -179,29 +177,13 @@ export function FilterPopover({
           <Input
             className="h-9 rounded-full pl-10"
             placeholder={t('search')}
-            onChange={(event) => {
-              const value = event.target.value
-
-              if (value.length === 0) {
-                setFilteredFilters(filters)
-              } else {
-                setFilteredFilters(
-                  filters.filter((filter) =>
-                    filter.label.toLowerCase().includes(value.toLowerCase())
-                  )
-                )
-              }
-
-              if (onSearch) {
-                onSearch(event)
-              }
-            }}
+            onChange={onSearch}
           />
         </div>
 
         <div className="max-h-72 overflow-y-auto px-1.5">
           <FilterList>
-            {filteredFilters.map((filter, index) => (
+            {filters.map((filter, index) => (
               <FilterListItem
                 key={`${filter.label}-${index}`}
                 onClick={() => onSelect(filter)}

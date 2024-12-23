@@ -95,30 +95,27 @@ export function SearchNewsForm({
   const sources = useDefaultSources()
   const languages = useDefaultLanguages()
 
-  const [filters, setFilters] = React.useState<FilterRecordType>({
+  const defaultFilters = {
     categories,
     countries,
     sources,
     languages,
-  })
+  }
+
+  const originalFiltersRef = React.useRef<FilterRecordType>(defaultFilters)
+  const [filters, setFilters] = React.useState<FilterRecordType>(defaultFilters)
 
   const getFilterLabel = (
     defaultLabel: string,
-    filterName: FilterLabelType,
     selectedFiltersLength: number
   ) => {
-    if (selectedFiltersLength === 0) {
-      return filterName
-    }
-
     if (selectedFiltersLength > 0) {
       return (
         <>
-          {selectedFiltersLength} {filterName}
+          {selectedFiltersLength} {defaultLabel}
         </>
       )
     }
-
     return defaultLabel
   }
 
@@ -136,6 +133,48 @@ export function SearchNewsForm({
           selected: isMatch ? !filter.selected : f.selected,
         }
       }),
+    }))
+  }
+
+  const onSearch = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    filterType: FilterLabelType
+  ) => {
+    const query = event.target.value.toLowerCase()
+
+    if (!query) {
+      setFilters((prev) => ({
+        ...prev,
+        [filterType]: originalFiltersRef.current[filterType].map(
+          (originalFilter) => {
+            const prevFilter = prev[filterType].find(
+              (f) => f.label === originalFilter.label
+            )
+            return {
+              ...originalFilter,
+              selected: prevFilter?.selected ?? false,
+            }
+          }
+        ),
+      }))
+      return
+    }
+
+    setFilters((prev) => ({
+      ...prev,
+      [filterType]: originalFiltersRef.current[filterType]
+        .filter((originalFilter) =>
+          originalFilter.label.toLowerCase().includes(query)
+        )
+        .map((filteredItem) => {
+          const prevFilter = prev[filterType].find(
+            (f) => f.label === filteredItem.label
+          )
+          return {
+            ...filteredItem,
+            selected: prevFilter?.selected ?? false,
+          }
+        }),
     }))
   }
 
@@ -188,17 +227,17 @@ export function SearchNewsForm({
           </Button>
         </div>
 
-        <div className="flex flex-wrap items-center justify-start gap-2">
+        <div className="flex flex-wrap items-center justify-start gap-2 px-2">
           <FilterPopover
             title={t('categories')}
             filterType="categories"
             filters={filters.categories}
+            onSearch={(event) => onSearch(event, 'categories')}
             onSelect={(filter) => selectFilter(filter, 'categories')}
           >
             <LayoutList className="text-indigo-500" />{' '}
             {getFilterLabel(
               t('categories'),
-              'categories',
               getSelectedFilters('categories').length
             )}
           </FilterPopover>
@@ -207,26 +246,23 @@ export function SearchNewsForm({
             title={t('sources')}
             filterType="sources"
             filters={filters.sources}
+            onSearch={(event) => onSearch(event, 'sources')}
             onSelect={(filter) => selectFilter(filter, 'sources')}
           >
             <BookOpenText className="text-blue-500" />{' '}
-            {getFilterLabel(
-              t('sources'),
-              'sources',
-              getSelectedFilters('sources').length
-            )}
+            {getFilterLabel(t('sources'), getSelectedFilters('sources').length)}
           </FilterPopover>
 
           <FilterPopover
             title={t('countries')}
             filterType="countries"
             filters={filters.countries}
+            onSearch={(event) => onSearch(event, 'countries')}
             onSelect={(filter) => selectFilter(filter, 'countries')}
           >
             <Earth className="text-sky-500" />{' '}
             {getFilterLabel(
               t('countries'),
-              'countries',
               getSelectedFilters('countries').length
             )}
           </FilterPopover>
@@ -235,12 +271,12 @@ export function SearchNewsForm({
             title={t('languages')}
             filterType="languages"
             filters={filters.languages}
+            onSearch={(event) => onSearch(event, 'languages')}
             onSelect={(filter) => selectFilter(filter, 'languages')}
           >
             <Languages className="text-cyan-500" />{' '}
             {getFilterLabel(
               t('languages'),
-              'languages',
               getSelectedFilters('languages').length
             )}
           </FilterPopover>

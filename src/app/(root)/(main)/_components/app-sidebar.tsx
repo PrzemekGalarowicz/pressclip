@@ -12,9 +12,9 @@ import {
   Bot,
   CalendarSearch,
   ChevronRight,
-  Circle,
   Flag,
   FlaskConical,
+  Folder,
   FolderOpen,
   FolderSearch,
   MoreHorizontal,
@@ -114,7 +114,7 @@ export function AppSidebar() {
     {
       title: 'Competition',
       url: '/feeds/competition',
-      icon: Circle,
+      icon: Folder,
       color: null,
       items: [
         {
