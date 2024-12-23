@@ -137,39 +137,36 @@ export function FilterListItemActionButton({
   )
 }
 
-export function FilterPopover({
-  className,
-  children,
-  title,
-  filterType,
-  filters,
-  onSearch,
-  onSelect,
-}: {
+export function FilterPopover(props: {
   className?: string
   children?: React.ReactNode
   title: string
   filterType: FilterLabelType
   filters: FilterType[]
-  onSearch?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onSearch?: (query: string) => void
   onSelect: (filter: FilterType) => void
 }) {
   const t = useTranslations('SearchPage')
+
+  const [filteredFilteres, setFilteredFilteres] = React.useState(props.filters)
+  React.useEffect(() => {
+    setFilteredFilteres(props.filters)
+  }, [props.filters])
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          className={cn('justify-between', className)}
+          className={cn('justify-between', props.className)}
           variant="secondary"
         >
-          {children} <ChevronDown className="text-muted-foreground" />
+          {props.children} <ChevronDown className="text-muted-foreground" />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent className="max-w-72 px-0 py-1.5" align="start">
         <h4 className="border-b px-3 pb-3 pt-1 font-serif text-sm font-medium">
-          {title}
+          {props.title}
         </h4>
 
         <div className="relative my-2 px-1.5">
@@ -177,21 +174,31 @@ export function FilterPopover({
           <Input
             className="h-9 rounded-full pl-10"
             placeholder={t('search')}
-            onChange={onSearch}
+            onChange={(event) => {
+              const query = event.target.value
+              const filtered = props.filters.filter((filter) =>
+                filter.label.toLowerCase().includes(query.toLowerCase())
+              )
+              setFilteredFilteres(filtered)
+
+              if (props.onSearch) {
+                props.onSearch(query)
+              }
+            }}
           />
         </div>
 
         <div className="max-h-72 overflow-y-auto px-1.5">
           <FilterList>
-            {filters.map((filter, index) => (
+            {filteredFilteres.map((filter, index) => (
               <FilterListItem
                 key={`${filter.label}-${index}`}
-                onClick={() => onSelect(filter)}
+                onClick={() => props.onSelect(filter)}
               >
                 <FilterListItemLabel>
-                  {filterType !== 'sources' && (
+                  {props.filterType !== 'sources' && (
                     <FilterListItemIcon>
-                      {filterType === 'categories' ? (
+                      {props.filterType === 'categories' ? (
                         <filter.icon className="size-4 text-muted-foreground" />
                       ) : (
                         <CircleFlag

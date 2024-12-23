@@ -48,12 +48,56 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+
+type SortByType = 'published_desc' | 'published_asc' | 'relevance'
+
+function SortByDropdown(props: {
+  value: SortByType
+  onValueChange: (
+    value: 'published_desc' | 'published_asc' | 'relevance'
+  ) => void
+}) {
+  const t = useTranslations('SearchPage')
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="secondary">
+          {props.value === 'published_desc' ? (
+            <CalendarArrowDown className="text-lime-500" />
+          ) : props.value === 'published_asc' ? (
+            <CalendarArrowUp className="text-lime-500" />
+          ) : (
+            <ArrowDownWideNarrow className="text-lime-500" />
+          )}
+          <ChevronDown className="text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>{t('sortOptions')}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup
+          value={props.value}
+          onValueChange={(value) =>
+            props.onValueChange(
+              value as 'relevance' | 'published_desc' | 'published_asc'
+            )
+          }
+        >
+          <DropdownMenuRadioItem value="relevance">
+            {t('relevance')}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="published_desc">
+            {t('publishedDesc')}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="published_asc">
+            {t('publishedAsc')}
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
 
 function useNewsFormSchema() {
   const t = useTranslations('SearchPage')
@@ -76,12 +120,6 @@ export function SearchNewsForm({
 }: React.ComponentPropsWithRef<'form'>) {
   const t = useTranslations('SearchPage')
 
-  const [sortBy, setSortBy] = React.useState<
-    'published_desc' | 'published_asc' | 'relevance'
-  >('published_desc')
-
-  const [_, startTransition] = React.useTransition()
-
   const newsFormSchema = useNewsFormSchema()
   const form = useForm<NewsFormData>({
     resolver: zodResolver(newsFormSchema),
@@ -102,19 +140,17 @@ export function SearchNewsForm({
     languages,
   }
 
-  const originalFiltersRef = React.useRef<FilterRecordType>(defaultFilters)
   const [filters, setFilters] = React.useState<FilterRecordType>(defaultFilters)
+  const [sortBy, setSortBy] = React.useState<SortByType>('published_desc')
+
+  const [_, startTransition] = React.useTransition()
 
   const getFilterLabel = (
     defaultLabel: string,
     selectedFiltersLength: number
   ) => {
     if (selectedFiltersLength > 0) {
-      return (
-        <>
-          {selectedFiltersLength} {defaultLabel}
-        </>
-      )
+      return `${selectedFiltersLength} ${defaultLabel}`
     }
     return defaultLabel
   }
@@ -136,52 +172,9 @@ export function SearchNewsForm({
     }))
   }
 
-  const onSearch = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    filterType: FilterLabelType
-  ) => {
-    const query = event.target.value.toLowerCase()
-
-    if (!query) {
-      setFilters((prev) => ({
-        ...prev,
-        [filterType]: originalFiltersRef.current[filterType].map(
-          (originalFilter) => {
-            const prevFilter = prev[filterType].find(
-              (f) => f.label === originalFilter.label
-            )
-            return {
-              ...originalFilter,
-              selected: prevFilter?.selected ?? false,
-            }
-          }
-        ),
-      }))
-      return
-    }
-
-    setFilters((prev) => ({
-      ...prev,
-      [filterType]: originalFiltersRef.current[filterType]
-        .filter((originalFilter) =>
-          originalFilter.label.toLowerCase().includes(query)
-        )
-        .map((filteredItem) => {
-          const prevFilter = prev[filterType].find(
-            (f) => f.label === filteredItem.label
-          )
-          return {
-            ...filteredItem,
-            selected: prevFilter?.selected ?? false,
-          }
-        }),
-    }))
-  }
-
   const onSubmit = (data: NewsFormData) => {
     startTransition(async () => {
       console.log('onSubmit', data)
-      form.reset()
     })
   }
 
@@ -232,7 +225,6 @@ export function SearchNewsForm({
             title={t('categories')}
             filterType="categories"
             filters={filters.categories}
-            onSearch={(event) => onSearch(event, 'categories')}
             onSelect={(filter) => selectFilter(filter, 'categories')}
           >
             <LayoutList className="text-indigo-500" />{' '}
@@ -246,7 +238,6 @@ export function SearchNewsForm({
             title={t('sources')}
             filterType="sources"
             filters={filters.sources}
-            onSearch={(event) => onSearch(event, 'sources')}
             onSelect={(filter) => selectFilter(filter, 'sources')}
           >
             <BookOpenText className="text-blue-500" />{' '}
@@ -257,7 +248,6 @@ export function SearchNewsForm({
             title={t('countries')}
             filterType="countries"
             filters={filters.countries}
-            onSearch={(event) => onSearch(event, 'countries')}
             onSelect={(filter) => selectFilter(filter, 'countries')}
           >
             <Earth className="text-sky-500" />{' '}
@@ -271,7 +261,6 @@ export function SearchNewsForm({
             title={t('languages')}
             filterType="languages"
             filters={filters.languages}
-            onSearch={(event) => onSearch(event, 'languages')}
             onSelect={(filter) => selectFilter(filter, 'languages')}
           >
             <Languages className="text-cyan-500" />{' '}
@@ -281,42 +270,7 @@ export function SearchNewsForm({
             )}
           </FilterPopover>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary">
-                {sortBy === 'published_desc' ? (
-                  <CalendarArrowDown className="text-lime-500" />
-                ) : sortBy === 'published_asc' ? (
-                  <CalendarArrowUp className="text-lime-500" />
-                ) : (
-                  <ArrowDownWideNarrow className="text-lime-500" />
-                )}
-                <ChevronDown className="text-muted-foreground" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>{t('sortOptions')}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={sortBy}
-                onValueChange={(value) =>
-                  setSortBy(
-                    value as 'relevance' | 'published_desc' | 'published_asc'
-                  )
-                }
-              >
-                <DropdownMenuRadioItem value="relevance">
-                  {t('relevance')}
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="published_desc">
-                  {t('publishedDesc')}
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="published_asc">
-                  {t('publishedAsc')}
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <SortByDropdown value={sortBy} onValueChange={setSortBy} />
         </div>
       </form>
     </Form>
@@ -344,18 +298,9 @@ export function SearchLayout({
           {t.rich('description', {
             advancedSearchOptions: t('advancedSearchOptions'),
             button: (chunks) => (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button size="sm" variant="link" className="!h-auto !p-0">
-                      {chunks}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {t('advancedSearchOptionsTooltip')}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Button size="sm" variant="link" className="!h-auto !p-0">
+                {chunks}
+              </Button>
             ),
           })}
           <br />
